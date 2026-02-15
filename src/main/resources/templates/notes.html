@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои заметки</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Мои заметки</h1>
+        </header>
+
+        <!-- Форма создания -->
+        <div class="note-form">
+            <h2>Новая заметка</h2>
+            <form action="#" th:action="@{/notes}" method="post">
+                <input type="text" name="title" placeholder="Заголовок" required>
+                <textarea name="content" placeholder="Текст заметки..." rows="3" required></textarea>
+                <button type="submit">Сохранить</button>
+            </form>
+        </div>
+
+        <!-- Список заметок -->
+        <div class="notes-grid">
+            <div th:each="note : ${notes}" class="note-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <h3 th:text="${note.title}">Заголовок</h3>
+                    
+                    <!-- Форма удаления -->
+                    <form th:action="@{/notes/delete/{id}(id=${note.id})}" method="post">
+                        <button type="submit" class="delete-btn" onclick="return confirm('Удалить заметку?')">Удалить</button>
+                    </form>
+                </div>
+                
+                <p th:text="${note.content}">Текст заметки</p>
+                
+                <div class="note-meta">
+                    <span th:text="${#temporals.format(note.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
