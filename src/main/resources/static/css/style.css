@@ -123,3 +123,22 @@ header h1 {
 .delete-btn:hover {
     opacity: 1;
 }
+
+.edit-btn {
+    text-decoration: none;
+    font-size: 1.2em;
+    margin-right: 10px;
+    opacity: 0.6;
+}
+
+.edit-btn:hover {
+    opacity: 1;
+}
+
+.back-link {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 5px;
+}

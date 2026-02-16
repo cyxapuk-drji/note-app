@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.notes.app.service.NoteService;
+import com.notes.app.model.Note;
 import org.springframework.ui.Model;
 
 @Controller
@@ -18,6 +19,7 @@ public class NoteViewController {
     @Autowired
     private NoteService noteService;
 
+    // Главная старница со списком всех заметок
     @GetMapping
     public String showNotes(Model model) {
         
@@ -26,6 +28,17 @@ public class NoteViewController {
         return "notes";
     }
 
+    // Получить форму редактирования заметок
+    @GetMapping("/edit/{id}")
+    public String getEditNotes(@PathVariable Long id, Model model) {
+        
+        Note note = noteService.getNoteById(id);
+        model.addAttribute("note", note);
+
+        return "edit-note";
+    }
+
+    // Создание заметок
     @PostMapping
     public String createNotes(@RequestParam String title, @RequestParam String content) {
         
@@ -34,9 +47,22 @@ public class NoteViewController {
         return "redirect:/notes";
     }
 
+    // Удаление заметки
     @PostMapping("/delete/{id}")
     public String deleteNotes(@PathVariable Long id) {
+        
         noteService.deleteNote(id);
+        
+        return "redirect:/notes";
+    }
+
+    // Обновление заметки после редактирования
+    @PostMapping("/update/{id}")
+    public String updateNotes(@PathVariable Long id, @RequestParam String title, @RequestParam String content) {
+        
+        noteService.updateNote(id, title, content);
+        
+
         return "redirect:/notes";
     }
 }

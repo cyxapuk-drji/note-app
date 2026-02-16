@@ -31,13 +31,16 @@
                     <!-- Форма удаления -->
                     <form th:action="@{/notes/delete/{id}(id=${note.id})}" method="post">
                         <button type="submit" class="delete-btn" onclick="return confirm('Удалить заметку?')">Удалить</button>
+                        <a th:href="@{/notes/edit/{id}(id=${note.id})}" class="edit-btn">Редактировать</a>
                     </form>
                 </div>
                 
                 <p th:text="${note.content}">Текст заметки</p>
                 
                 <div class="note-meta">
-                    <span th:text="${#temporals.format(note.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</span>
+                    <span>Создано: <span th:text="${#temporals.format(note.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2026 12:00</span></span>
+                       <br>
+                    <span>Обновлено: <span th:text="${#temporals.format(note.updatedAt, 'dd.MM.yyyy HH:mm')}">01.01.2026 12:00</span></span>
                 </div>
             </div>
         </div>
