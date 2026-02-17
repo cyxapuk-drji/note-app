@@ -9,21 +9,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.notes.app.service.NoteService;
+
+import jakarta.servlet.http.HttpSession;
+
 import com.notes.app.model.Note;
 import org.springframework.ui.Model;
 
 @Controller
 @RequestMapping("/notes")
-public class NoteViewController {
+public class NoteController {
     
     @Autowired
     private NoteService noteService;
 
     // Главная старница со списком всех заметок
     @GetMapping
-    public String showNotes(Model model) {
+    public String showNotes(HttpSession session, Model model) {
         
-        model.addAttribute("notes", noteService.getAllNotes());
+        Long userId = (Long) session.getAttribute("username");
+        if (userId == null) {
+            return "redirect:/auth/login";
+        }
+        model.addAttribute("notes", noteService.getNotesByUseId(userId));
 
         return "notes";
     }
@@ -40,11 +47,14 @@ public class NoteViewController {
 
     // Создание заметок
     @PostMapping
-    public String createNotes(@RequestParam String title, @RequestParam String content) {
-        
-        noteService.saveNote(title, content);
-
-        return "redirect:/notes";
+    public String createNotes(@RequestParam String title, @RequestParam String content,HttpSession session,Model model) {
+    
+        Long userId = (Long) session.getAttribute("userId");
+    
+        noteService.createNote(title, content, userId);  // новый метод
+    
+        model.addAttribute("notes", noteService.getNotesByUseId(userId));
+        return "notes";
     }
 
     // Удаление заметки
@@ -62,7 +72,6 @@ public class NoteViewController {
         
         noteService.updateNote(id, title, content);
         
-
         return "redirect:/notes";
     }
 }

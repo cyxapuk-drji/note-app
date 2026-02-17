@@ -1,9 +1,8 @@
 package com.notes.app.model;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -15,11 +14,16 @@ public class Note {
     private long id;
     
     private String title;
-
+    
     private String content;
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

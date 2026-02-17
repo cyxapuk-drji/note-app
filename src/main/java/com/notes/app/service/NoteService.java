@@ -8,9 +8,14 @@ import com.notes.app.model.Note;
 
 import java.util.List;
 import java.time.LocalDateTime;
+import com.notes.app.repository.UserRepository;
+import com.notes.app.model.User;
 
 @Service
 public class NoteService {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private NoteRepository noteRepository;
@@ -20,19 +25,6 @@ public class NoteService {
         return noteRepository.findAll();
     }
 
-    // Сохрание  заметки
-    public Note saveNote(String title, String content) {
-
-        Note note = new Note();
-
-        note.setTitle(title);
-        note.setContent(content);
-        note.setCreatedAt(LocalDateTime.now());
-        note.setUpdatedAt(LocalDateTime.now());
-
-        return noteRepository.save(note);
-    }
-    
     // Удаление заметки
     public void deleteNote(Long id) {
         noteRepository.deleteById(id);
@@ -54,5 +46,26 @@ public class NoteService {
         
         return noteRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Note not found"));
+    }
+
+    // получение  заметок пользователя по id
+    public List<Note> getNotesByUseId(Long userId) {
+        return noteRepository.findByUserId(userId);   
+    }
+
+    //создание заметки с id
+    public Note createNote(String title, String content, Long userId) {
+    
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    
+        Note note = new Note();
+        note.setTitle(title);
+        note.setContent(content);
+        note.setUser(user);
+        note.setCreatedAt(LocalDateTime.now());
+        note.setUpdatedAt(LocalDateTime.now());
+    
+        return noteRepository.save(note);
     }
 }
