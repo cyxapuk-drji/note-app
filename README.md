@@ -2,6 +2,12 @@
 
 Spring Boot приложение для заметок с PostgreSQL.
 
+## Функции
+- Регистрация и вход пользователей
+- Создание, просмотр, редактирование, удаление заметок
+- Заметки привязаны к конкретному пользователю
+- Выход из системы
+
 ## Запуск
 
 ```bash
@@ -14,18 +20,18 @@ sudo -u postgres psql -c "CREATE DATABASE noteapp;"
 sudo -u postgres psql -c "CREATE USER noteuser WITH PASSWORD 'password';"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE noteapp TO noteuser;"
 
-# 3. Запустить
+# 3. Настроить конфиг
+cp src/main/resources/application.yaml
+# Отредактируйте application.yaml под свою базу данных
+
+# 4. Запустить
 ./mvnw spring-boot:run
+Открыть: http://localhost:8080/auth/login
 
-Открыть: http://localhost:8080/notes
+Страницы
 
-    Отредактируй application.yaml под свою базу данных
+    /auth/login — вход
 
-text
+    /auth/register — регистрация
 
-
-### **3. Добавь в Git**
-```bash
-git add src/main/resources/application-example.yaml README.md
-git commit -m "Add example config"
-git push origin main
+    /notes — список заметок (только для авторизованных)

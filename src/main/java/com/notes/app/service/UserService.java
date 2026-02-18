@@ -12,6 +12,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    // Регистрация пользователя
     public User register(String username, String password) {
         
         if (userRepository.findByUsername(username).isPresent()) {
