@@ -32,8 +32,7 @@ public class AuthController {
     
         if (user != null && user.getPassword().equals(password)) {
             session.setAttribute("userId", user.getId());
-            System.out.println("LOGIN: userId=" + user.getId() + " sessionId=" + session.getId());
-            return "notes";
+            return "redirect:/notes";
         }
     
         model.addAttribute("error", "Неверный логин или пароль");

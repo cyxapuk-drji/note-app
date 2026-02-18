@@ -26,11 +26,11 @@ public class NoteController {
     @GetMapping
     public String showNotes(HttpSession session, Model model) {
         
-        Long userId = (Long) session.getAttribute("username");
+        Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return "redirect:/auth/login";
         }
-        model.addAttribute("notes", noteService.getNotesByUseId(userId));
+        model.addAttribute("notes", noteService.getNotesByUserId(userId));
 
         return "notes";
     }
@@ -53,8 +53,8 @@ public class NoteController {
     
         noteService.createNote(title, content, userId);  // новый метод
     
-        model.addAttribute("notes", noteService.getNotesByUseId(userId));
-        return "notes";
+        model.addAttribute("notes", noteService.getNotesByUserId(userId));
+        return "redirect:/notes";
     }
 
     // Удаление заметки

@@ -49,7 +49,7 @@ public class NoteService {
     }
 
     // получение  заметок пользователя по id
-    public List<Note> getNotesByUseId(Long userId) {
+    public List<Note> getNotesByUserId(Long userId) {
         return noteRepository.findByUserId(userId);   
     }
 
