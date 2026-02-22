@@ -1,37 +1,51 @@
-# Note App
+# Note App 📝
 
-Spring Boot приложение для заметок с PostgreSQL.
+Spring Boot приложение для заметок с регистрацией, авторизацией и PostgreSQL.
 
-## Функции
+## Возможности
 - Регистрация и вход пользователей
-- Создание, просмотр, редактирование, удаление заметок
+- Создание, просмотр, редактирование и удаление заметок
 - Заметки привязаны к конкретному пользователю
 - Выход из системы
+- Полная контейнеризация через Docker
 
-## Запуск
+## Технологии
+- **Java 17**
+- **Spring Boot 4**
+- **Spring MVC**
+- **Spring Data JPA**
+- **PostgreSQL**
+- **Thymeleaf**
+- **Docker / Docker Compose**
+- **Maven**
+
+## Быстрый старт (Docker)
+
+Самый простой способ запустить приложение — использовать Docker Compose.
 
 ```bash
-# 1. Клонировать
-git clone https://github.com/cyxapuk/note-app.git
+# 1. Клонировать репозиторий
+git clone https://github.com/cyxapuk-drji/note-app
 cd note-app
 
-# 2. Создать базу в PostgreSQL
-sudo -u postgres psql -c "CREATE DATABASE noteapp;"
-sudo -u postgres psql -c "CREATE USER noteuser WITH PASSWORD 'password';"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE noteapp TO noteuser;"
+# 2. Собрать проект (пропуская тесты, т.к. им нужна БД)
+./mvnw clean package -DskipTests
 
-# 3. Настроить конфиг
-cp src/main/resources/application.yaml
-# Отредактируйте application.yaml под свою базу данных
+# 3. Запустить через Docker Compose
+docker-compose up
+```
+Если при запуске возникает ошибка, что таблица users не существует, нужно зайти в контейнер с PostgreSQL и дать права:
 
-# 4. Запустить
-./mvnw spring-boot:run
-Открыть: http://localhost:8080/auth/login
+```bash
 
-Страницы
+# 1. Зайти в запущенный контейнер с PostgreSQL
+docker exec -it note-app-postgres-1 psql -U admin -d noteapp
 
-    /auth/login — вход
+# 2. Внутри контейнера выполнить SQL-команды
+GRANT ALL ON SCHEMA public TO admin;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO admin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO admin;
+\q
 
-    /auth/register — регистрация
-
-    /notes — список заметок (только для авторизованных)
+# 4. Перезапустить приложение
+docker-compose restart app

@@ -3,8 +3,8 @@ spring:
     name: Noteapp
   datasource:
     url: jdbc:postgresql://localhost:5432/noteapp
-    username: YOUR_USERNAME
-    password: YOUR_PASSWORD
+    username: admin
+    password: admin
     driver-class-name: org.postgresql.Driver
   
   jpa:
