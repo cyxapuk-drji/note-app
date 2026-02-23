@@ -28,7 +28,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    // Поиск пользователя по username
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null);
+    }
+
+    // Поиск пользователя по id
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    // Сохрание user в БД
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
 }

@@ -52,6 +52,59 @@ public class AuthController {
         return "redirect:/auth/login";
     }
 
+    // Получить страницу со сменой пароля
+    @GetMapping("/change-password")
+    public String changePasswordPage() {
+        return "change-password";
+    }
+
+    // Смена пароля
+    @PostMapping("/change-password")
+    public String changePassword(
+        @RequestParam String oldPassword,
+        @RequestParam String newPassword,
+        @RequestParam String confirmPassword,
+        HttpSession session,
+        Model model) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/auth/login";
+        }
+
+        User currentUser = userService.findById(userId);
+        
+        if (!oldPassword.equals(currentUser.getPassword())) {
+            model.addAttribute("error", "Неверный старый пароль");
+            return "change-password";
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "Новые пароли не совпадают");
+            return "change-password";
+        }
+
+        if (oldPassword.equals(newPassword)) {
+            model.addAttribute("error", "Новый пароль должен отличаться от старого");
+            return "change-password";
+        }
+
+        if (newPassword.isEmpty()) {
+            model.addAttribute("error", "Пароль не может быть пустым");
+            return "change-password";
+        }
+
+        try {
+            currentUser.setPassword(newPassword);
+            userService.updateUser(currentUser);
+            session.setAttribute("userPassword", newPassword);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        
+        return "redirect:/auth/login";
+    }
+
     // Выход
     @GetMapping("/logout")
     public String logout(HttpSession session) {

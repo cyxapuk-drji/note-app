@@ -8,9 +8,14 @@
 </head>
 <body>
     <div class="container">
-        <header>
+        <!-- Шапка с кнопками -->
+        <div class="header-actions">
             <h1>Мои заметки</h1>
-        </header>
+            <div class="header-buttons">
+                <a th:href="@{/auth/change-password}" class="change-password-btn">Сменить пароль</a>
+                <a th:href="@{/auth/logout}" class="logout-btn">Выйти</a>
+            </div>
+        </div>
 
         <!-- Форма создания -->
         <div class="note-form">
@@ -25,28 +30,26 @@
         <!-- Список заметок -->
         <div class="notes-grid">
             <div th:each="note : ${notes}" class="note-card">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div class="note-header">
                     <h3 th:text="${note.title}">Заголовок</h3>
-                    
-                    <!-- Форма удаления -->
-                    <form th:action="@{/notes/delete/{id}(id=${note.id})}" method="post">
-                        <button type="submit" class="delete-btn" onclick="return confirm('Удалить заметку?')">Удалить</button>
+                    <div class="note-actions">
                         <a th:href="@{/notes/edit/{id}(id=${note.id})}" class="edit-btn">Редактировать</a>
-                    </form>
+                        <form th:action="@{/notes/delete/{id}(id=${note.id})}" method="post" class="delete-form">
+                            <button type="submit" class="delete-btn" onclick="return confirm('Удалить заметку?')">Удалить</button>
+                        </form>
+                    </div>
                 </div>
                 
-                <p th:text="${note.content}">Текст заметки</p>
+                <p class="note-content" th:text="${note.content}">Текст заметки</p>
                 
                 <div class="note-meta">
-                    <span>Создано: <span th:text="${#temporals.format(note.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2026 12:00</span></span>
-                       <br>
-                    <span>Обновлено: <span th:text="${#temporals.format(note.updatedAt, 'dd.MM.yyyy HH:mm')}">01.01.2026 12:00</span></span>
+                    <div>Создано: <span th:text="${#temporals.format(note.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2026 12:00</span></div>
+                    <div th:if="${note.updatedAt != null}">
+                        Обновлено: <span th:text="${#temporals.format(note.updatedAt, 'dd.MM.yyyy HH:mm')}">01.01.2026 12:00</span>
+                    </div>
                 </div>
             </div>
         </div>
-        <header style="display: flex; justify-content: space-between; align-items: center;">
-            <a th:href="@{/auth/logout}" class="logout-btn">Выйти</a>
-        </header>
     </div>
 </body>
 </html>
