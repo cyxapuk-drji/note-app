@@ -28,6 +28,15 @@
             <form action="#" th:action="@{/notes}" method="post">
                 <input type="text" name="title" placeholder="Заголовок" required>
                 <textarea name="content" placeholder="Текст заметки..." rows="3" required></textarea>
+
+                <!-- Выбор категории -->
+                <select name="categoryId" class="category-select">
+                    <option value="">— Без категории —</option>
+                    <option th:each="cat : ${categories}" 
+                        th:value="${cat.id}" 
+                        th:text="${cat.name}">
+                    </option>
+                </select>
                 <button type="submit">Сохранить</button>
             </form>
         </div>
@@ -43,6 +52,14 @@
                             <button type="submit" class="delete-btn" onclick="return confirm('Удалить заметку?')">Удалить</button>
                         </form>
                     </div>
+                </div>
+                
+                <!-- БЛОК С КАТЕГОРИЕЙ (добавлено) -->
+                <div class="note-category" th:if="${note.category != null}">
+                    <span class="category-badge" 
+                          th:style="'background: ' + ${note.category.color}"
+                          th:text="${note.category.name}">
+                    </span>
                 </div>
                 
                 <p class="note-content" th:text="${note.content}">Текст заметки</p>
@@ -82,6 +99,30 @@
             
             <!-- Кнопки действий -->
             <div class="sidebar-actions">
+                
+                <!-- БЛОК КАТЕГОРИЙ -->
+                <div class="categories-section">
+                    <h3>Категории</h3>
+                    
+                    <!-- Список категорий -->
+                    <div class="categories-list">
+                        <div th:each="cat : ${categories}" class="category-item">
+                            <span class="category-color" th:style="'background: ' + ${cat.color}"></span>
+                            <span th:text="${cat.name}">Работа</span>
+                            <form th:action="@{/categories/delete/{id}(id=${cat.id})}" method="post" class="delete-category-form">
+                                <button type="submit" onclick="return confirm('Удалить категорию?')">×</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Форма создания категории -->
+                    <form th:action="@{/categories/create}" method="post" class="add-category-form">
+                        <input type="text" name="name" placeholder="Новая категория" required>
+                        <input type="color" name="color" value="#667eea">
+                        <button type="submit">+</button>
+                    </form>
+                </div>
+                
                 <a th:href="@{/auth/change-password}" class="sidebar-btn">Сменить пароль</a>
                 <a th:href="@{/auth/logout}" class="sidebar-btn logout">Выйти</a>
             </div>

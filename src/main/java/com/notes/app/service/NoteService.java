@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.notes.app.repository.NoteRepository;
+import com.notes.app.model.Category;
 import com.notes.app.model.Note;
 
 import java.util.List;
@@ -54,7 +55,7 @@ public class NoteService {
     }
 
     //создание заметки с id
-    public Note createNote(String title, String content, Long userId) {
+    public Note createNote(String title, String content, Long userId, Category category) {
     
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -63,6 +64,7 @@ public class NoteService {
         note.setTitle(title);
         note.setContent(content);
         note.setUser(user);
+        note.setCategory(category);
         note.setCreatedAt(LocalDateTime.now());
         note.setUpdatedAt(LocalDateTime.now());
     

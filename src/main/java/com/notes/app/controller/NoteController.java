@@ -2,18 +2,18 @@ package com.notes.app.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import com.notes.app.service.NoteService;
+import com.notes.app.service.*;
+import com.notes.app.model.Category;
+import com.notes.app.model.User;
 
 import jakarta.servlet.http.HttpSession;
 
 import com.notes.app.model.Note;
 import org.springframework.ui.Model;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/notes")
@@ -22,24 +22,41 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private UserService userService;
+
     // Главная старница со списком всех заметок
     @GetMapping
     public String showNotes(HttpSession session, Model model) {
         
         Long userId = (Long) session.getAttribute("userId");
+
         if (userId == null) {
             return "redirect:/auth/login";
         }
+
+        List<Category> categories = categoryService.getCategoryByUserId(userId);
+
         model.addAttribute("notes", noteService.getNotesByUserId(userId));
+        model.addAttribute("categories", categories);
 
         return "notes";
     }
 
     // Получить форму редактирования заметок
     @GetMapping("/edit/{id}")
-    public String getEditNotes(@PathVariable Long id, Model model) {
+    public String getEditNotes(@PathVariable Long id, HttpSession session, Model model) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) return "redirect:/auth/login";
         
         Note note = noteService.getNoteById(id);
+        List<Category> categories = categoryService.getCategoryByUserId(userId); 
+
+        model.addAttribute("categories", categories);
         model.addAttribute("note", note);
 
         return "edit-note";
@@ -47,11 +64,23 @@ public class NoteController {
 
     // Создание заметок
     @PostMapping
-    public String createNotes(@RequestParam String title, @RequestParam String content,HttpSession session,Model model) {
+    public String createNotes(@RequestParam String title, @RequestParam String content,
+                              @RequestParam(required = false) Long categoryId, HttpSession session, Model model) {
     
         Long userId = (Long) session.getAttribute("userId");
+
+            if (userId == null) {
+                return "redirect:/auth/login";
+            }
     
-        noteService.createNote(title, content, userId);  // новый метод
+            User user = userService.findById(userId);
+
+            Category category = null;
+            if (categoryId != null) {
+                 category = categoryService.getCategory(categoryId);
+            }
+    
+        noteService.createNote(title, content, user.getId(), category);
     
         model.addAttribute("notes", noteService.getNotesByUserId(userId));
         return "redirect:/notes";
