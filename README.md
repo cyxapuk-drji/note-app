@@ -34,18 +34,3 @@ cd note-app
 # 3. Запустить через Docker Compose
 docker-compose up
 ```
-Если при запуске возникает ошибка, что таблица users не существует, нужно зайти в контейнер с PostgreSQL и дать права:
-
-```bash
-
-# 1. Зайти в запущенный контейнер с PostgreSQL
-docker exec -it note-app-postgres-1 psql -U admin -d noteapp
-
-# 2. Внутри контейнера выполнить SQL-команды
-GRANT ALL ON SCHEMA public TO admin;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO admin;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO admin;
-\q
-
-# 4. Перезапустить приложение
-docker-compose restart app

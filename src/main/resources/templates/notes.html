@@ -8,12 +8,17 @@
 </head>
 <body>
     <div class="container">
-        <!-- Шапка с кнопками -->
+        <!-- Шапка с иконкой профиля -->
         <div class="header-actions">
             <h1>Мои заметки</h1>
             <div class="header-buttons">
-                <a th:href="@{/auth/change-password}" class="change-password-btn">Сменить пароль</a>
-                <a th:href="@{/auth/logout}" class="logout-btn">Выйти</a>
+                <!-- Иконка профиля -->
+                <button class="profile-icon" onclick="toggleSidebar()">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+                        <circle cx="12" cy="8" r="4" fill="white"/>
+                        <path d="M12 14c-4 0-6 2-6 4h12c0-2-2-4-6-4z" fill="white"/>
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -51,5 +56,42 @@
             </div>
         </div>
     </div>
+
+    <!-- Боковая панель профиля -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>Профиль</h2>
+            <button class="close-btn" onclick="toggleSidebar()">×</button>
+        </div>
+        
+        <div class="sidebar-content">
+            <!-- Аватар -->
+            <div class="profile-avatar">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="#667eea">
+                    <circle cx="12" cy="8" r="4" fill="currentColor"/>
+                    <path d="M12 14c-4 0-6 2-6 4h12c0-2-2-4-6-4z" fill="currentColor"/>
+                </svg>
+            </div>
+            
+            <!-- Информация о пользователе -->
+            <div class="profile-info" th:with="userId=${session.userId}, username=${session.username}">
+                <p><strong>Имя:</strong> <span th:text="${username}">user</span></p>
+                <p><strong>ID:</strong> <span th:text="${userId}">1</span></p>
+                <p><strong>Заметок:</strong> <span th:text="${notes != null ? notes.size() : 0}">0</span></p>
+            </div>
+            
+            <!-- Кнопки действий -->
+            <div class="sidebar-actions">
+                <a th:href="@{/auth/change-password}" class="sidebar-btn">Сменить пароль</a>
+                <a th:href="@{/auth/logout}" class="sidebar-btn logout">Выйти</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Затемнение фона -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Подключаем JavaScript -->
+    <script th:src="@{/js/sidebar.js}"></script>
 </body>
 </html>
