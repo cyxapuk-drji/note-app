@@ -27,12 +27,13 @@ public class NoteService {
     }
 
     // Обновление заметки по id
-    public Note updateNote(Long id, String title, String content) {
-        Note note = noteRepository.findById(id).orElseThrow(() -> new RuntimeException("Note not found"));
+    public Note updateNote(Long noteId, String title, String content, Category category ) {
+        Note note = noteRepository.findById(noteId).orElseThrow(() -> new RuntimeException("Note not found"));
 
         note.setTitle(title);
         note.setContent(content);
         note.setUpdatedAt(LocalDateTime.now());
+        note.setCategory(category);
 
         return noteRepository.save(note);
     }

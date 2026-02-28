@@ -23,6 +23,10 @@
             </div>
         </div>
 
+        <div class="error" th:if="${param.error != null}" th:switch="${param.error}">
+            <p th:case="'unauthorized'">У вас нет прав для редактирования этой заметки</p>
+        </div>
+
         <!-- Форма создания -->
         <div class="note-form">
             <h2>Новая заметка</h2>
@@ -35,7 +39,7 @@
                     <option value="">— Без категории —</option>
                     <option th:each="cat : ${categories}" 
                         th:value="${cat.id}" 
-                        th:text="${cat.name}">
+                        th:text="${cat.name + ' (' + cat.noteCount + ')'}">
                     </option>
                 </select>
                 <button type="submit">Сохранить</button>
@@ -112,13 +116,14 @@
                     
                     <!-- Список категорий -->
                     <div class="categories-list">
-                        <!-- Все заметки -->
+                        <!-- Все заметки с общим счётчиком -->
                         <div class="category-item" th:classappend="${currentCategory == null} ? 'active-category'">
                             <span class="category-color" style="background: #667eea"></span>
                             <a th:href="@{/notes}" class="category-link">Все заметки</a>
+                            <span class="category-count" th:text="${totalNotes}">12</span>
                         </div>
                         
-                        <!-- Список категорий -->
+                        <!-- Список категорий со счётчиками -->
                         <div th:each="cat : ${categories}" 
                              class="category-item"
                              th:classappend="${currentCategory != null and currentCategory.id == cat.id} ? 'active-category'">
@@ -128,6 +133,7 @@
                                class="category-link">
                                Работа
                             </a>
+                            <span class="category-count" th:text="${cat.noteCount}">5</span>
                             <form th:action="@{/categories/delete/{id}(id=${cat.id})}" method="post" class="delete-category-form">
                                 <button type="submit" onclick="return confirm('Удалить категорию?')">×</button>
                             </form>

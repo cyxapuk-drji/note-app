@@ -42,13 +42,13 @@ public class NoteController {
 
         if (categoryId != null) {
             notes = noteService.getNotesByCategoryAndUser(categoryId, userId);
-            Category currentCat = categoryService.getCategory(userId);
+            Category currentCat = categoryService.getCategory(categoryId);
             model.addAttribute("currentCategory", currentCat);
         } else {
             notes = noteService.getNotesByUserId(userId);
         }
 
-        List<Category> categories = categoryService.getCategoryByUserId(userId);
+        List<Category> categories = categoryService.getCategoriesWithCount(userId);
 
         model.addAttribute("notes", notes);
         model.addAttribute("categories", categories);
@@ -106,11 +106,42 @@ public class NoteController {
     }
 
     // Обновление заметки после редактирования
-    @PostMapping("/update/{id}")
-    public String updateNotes(@PathVariable Long id, @RequestParam String title, @RequestParam String content) {
+@PostMapping("/update/{id}")
+public String updateNotes(@PathVariable Long id, 
+                          @RequestParam String title,
+                          @RequestParam String content, 
+                          @RequestParam(required = false) Long categoryId,
+                          HttpSession session,
+                          Model model) {
+    
+    Long userId = (Long) session.getAttribute("userId");
+    if (userId == null) {
+        return "redirect:/auth/login";
+    }
+    
+    try {
+        // Получаем заметку
+        Note note = noteService.getNoteById(id);
         
-        noteService.updateNote(id, title, content);
+        // Проверяем, что заметка принадлежит текущему пользователю
+        if (!note.getUser().getId().equals(userId)) {
+            return "redirect:/notes?error=unauthorized";
+        }
+        
+        // Получаем категорию (если выбрана)
+        Category category = null;
+        if (categoryId != null) {
+            category = categoryService.getCategory(categoryId);
+        }
+        
+        // Обновляем заметку
+        noteService.updateNote(id, title, content, category);
         
         return "redirect:/notes";
+        
+    } catch (RuntimeException e) {
+        // Если заметка не найдена
+        return "redirect:/notes?error=not_found";
     }
+}
 }

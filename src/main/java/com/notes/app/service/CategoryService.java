@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.notes.app.model.Category;
 import com.notes.app.repository.CategoryRepository;
+import com.notes.app.repository.NoteRepository;
+
 import java.util.List;
 import com.notes.app.model.User;
 
@@ -12,6 +14,9 @@ public class CategoryService {
     
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private NoteRepository noteRepository;
 
     public List<Category> getCategoryByUserId(Long userId) {
         return categoryRepository.findByUserId(userId);
@@ -34,5 +39,14 @@ public class CategoryService {
 
     public Category getCategory(Long id) {
         return categoryRepository.findById(id).orElse(null);
+    }
+
+    public List<Category> getCategoriesWithCount(Long userId) {
+        List<Category> categories = categoryRepository.findByUserId(userId);
+        for (Category cat : categories) {
+            int count = noteRepository.countByCategoryIdAndUserId(cat.getId(), userId);
+            cat.setNoteCount(count);
+        }
+        return categories;
     }
 }

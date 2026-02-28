@@ -19,4 +19,7 @@ public class Category {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Transient
+    private int noteCount;
 }
