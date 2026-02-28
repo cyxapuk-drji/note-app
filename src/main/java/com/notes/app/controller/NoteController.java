@@ -18,7 +18,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/notes")
 public class NoteController {
-    
+
     @Autowired
     private NoteService noteService;
 
@@ -31,7 +31,7 @@ public class NoteController {
     // Главная старница со списком всех заметок
     @GetMapping
     public String showNotes(@RequestParam(required = false) Long categoryId, HttpSession session, Model model) {
-        
+
         Long userId = (Long) session.getAttribute("userId");
 
         if (userId == null) {
@@ -61,10 +61,11 @@ public class NoteController {
     public String getEditNotes(@PathVariable Long id, HttpSession session, Model model) {
 
         Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) return "redirect:/auth/login";
-        
+        if (userId == null)
+            return "redirect:/auth/login";
+
         Note note = noteService.getNoteById(id);
-        List<Category> categories = categoryService.getCategoryByUserId(userId); 
+        List<Category> categories = categoryService.getCategoryByUserId(userId);
 
         model.addAttribute("categories", categories);
         model.addAttribute("note", note);
@@ -75,23 +76,23 @@ public class NoteController {
     // Создание заметок
     @PostMapping
     public String createNotes(@RequestParam String title, @RequestParam String content,
-                              @RequestParam(required = false) Long categoryId, HttpSession session, Model model) {
-    
+            @RequestParam(required = false) Long categoryId, HttpSession session, Model model) {
+
         Long userId = (Long) session.getAttribute("userId");
 
-            if (userId == null) {
-                return "redirect:/auth/login";
-            }
-    
-            User user = userService.findById(userId);
+        if (userId == null) {
+            return "redirect:/auth/login";
+        }
 
-            Category category = null;
-            if (categoryId != null) {
-                 category = categoryService.getCategory(categoryId);
-            }
-    
+        User user = userService.findById(userId);
+
+        Category category = null;
+        if (categoryId != null) {
+            category = categoryService.getCategory(categoryId);
+        }
+
         noteService.createNote(title, content, user.getId(), category);
-    
+
         model.addAttribute("notes", noteService.getNotesByUserId(userId));
         return "redirect:/notes";
     }
@@ -99,49 +100,45 @@ public class NoteController {
     // Удаление заметки
     @PostMapping("/delete/{id}")
     public String deleteNotes(@PathVariable Long id) {
-        
+
         noteService.deleteNote(id);
-        
+
         return "redirect:/notes";
     }
 
     // Обновление заметки после редактирования
-@PostMapping("/update/{id}")
-public String updateNotes(@PathVariable Long id, 
-                          @RequestParam String title,
-                          @RequestParam String content, 
-                          @RequestParam(required = false) Long categoryId,
-                          HttpSession session,
-                          Model model) {
-    
-    Long userId = (Long) session.getAttribute("userId");
-    if (userId == null) {
-        return "redirect:/auth/login";
-    }
-    
-    try {
-        // Получаем заметку
-        Note note = noteService.getNoteById(id);
-        
-        // Проверяем, что заметка принадлежит текущему пользователю
-        if (!note.getUser().getId().equals(userId)) {
-            return "redirect:/notes?error=unauthorized";
+    @PostMapping("/update/{id}")
+    public String updateNotes(@PathVariable Long id,
+            @RequestParam String title,
+            @RequestParam String content,
+            @RequestParam(required = false) Long categoryId,
+            HttpSession session,
+            Model model) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/auth/login";
         }
-        
-        // Получаем категорию (если выбрана)
-        Category category = null;
-        if (categoryId != null) {
-            category = categoryService.getCategory(categoryId);
+
+        try {
+            Note note = noteService.getNoteById(id);
+
+            if (!note.getUser().getId().equals(userId)) {
+                return "redirect:/notes?error=unauthorized";
+            }
+
+            Category category = null;
+            if (categoryId != null) {
+                category = categoryService.getCategory(categoryId);
+            }
+
+            noteService.updateNote(id, title, content, category);
+
+            return "redirect:/notes";
+
+        } catch (RuntimeException e) {
+            
+            return "redirect:/notes?error=not_found";
         }
-        
-        // Обновляем заметку
-        noteService.updateNote(id, title, content, category);
-        
-        return "redirect:/notes";
-        
-    } catch (RuntimeException e) {
-        // Если заметка не найдена
-        return "redirect:/notes?error=not_found";
     }
-}
 }
