@@ -21,17 +21,12 @@ public class NoteService {
     @Autowired
     private NoteRepository noteRepository;
 
-    // Получение списка со всеми заметками
-    public List<Note> getAllNotes() {
-        return noteRepository.findAll();
-    }
-
-    // Удаление заметки
+    // Удаление заметки по id
     public void deleteNote(Long id) {
         noteRepository.deleteById(id);
     }
 
-    // Обновление заметки
+    // Обновление заметки по id
     public Note updateNote(Long id, String title, String content) {
         Note note = noteRepository.findById(id).orElseThrow(() -> new RuntimeException("Note not found"));
 
@@ -69,5 +64,9 @@ public class NoteService {
         note.setUpdatedAt(LocalDateTime.now());
     
         return noteRepository.save(note);
+    }
+
+    public List<Note> getNotesByCategoryAndUser(Long categoryId, Long userId) {
+        return noteRepository.findByCategoryIdAndUserId(categoryId, userId);
     }
 }

@@ -30,7 +30,7 @@ public class NoteController {
 
     // Главная старница со списком всех заметок
     @GetMapping
-    public String showNotes(HttpSession session, Model model) {
+    public String showNotes(@RequestParam(required = false) Long categoryId, HttpSession session, Model model) {
         
         Long userId = (Long) session.getAttribute("userId");
 
@@ -38,9 +38,19 @@ public class NoteController {
             return "redirect:/auth/login";
         }
 
+        List<Note> notes;
+
+        if (categoryId != null) {
+            notes = noteService.getNotesByCategoryAndUser(categoryId, userId);
+            Category currentCat = categoryService.getCategory(userId);
+            model.addAttribute("currentCategory", currentCat);
+        } else {
+            notes = noteService.getNotesByUserId(userId);
+        }
+
         List<Category> categories = categoryService.getCategoryByUserId(userId);
 
-        model.addAttribute("notes", noteService.getNotesByUserId(userId));
+        model.addAttribute("notes", notes);
         model.addAttribute("categories", categories);
 
         return "notes";

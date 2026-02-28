@@ -10,7 +10,8 @@
     <div class="container">
         <!-- Шапка с иконкой профиля -->
         <div class="header-actions">
-            <h1>Мои заметки</h1>
+            <h1 th:if="${currentCategory == null}">Мои заметки</h1>
+            <h1 th:if="${currentCategory != null}" th:text="'Категория: ' + ${currentCategory.name}">Категория: - </h1>
             <div class="header-buttons">
                 <!-- Иконка профиля -->
                 <button class="profile-icon" onclick="toggleSidebar()">
@@ -42,7 +43,7 @@
         </div>
 
         <!-- Список заметок -->
-        <div class="notes-grid">
+        <div class="notes-grid" th:if="${notes != null and !notes.isEmpty()}">
             <div th:each="note : ${notes}" class="note-card">
                 <div class="note-header">
                     <h3 th:text="${note.title}">Заголовок</h3>
@@ -54,7 +55,7 @@
                     </div>
                 </div>
                 
-                <!-- БЛОК С КАТЕГОРИЕЙ (добавлено) -->
+                <!-- БЛОК С КАТЕГОРИЕЙ -->
                 <div class="note-category" th:if="${note.category != null}">
                     <span class="category-badge" 
                           th:style="'background: ' + ${note.category.color}"
@@ -71,6 +72,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Сообщение, если нет заметок -->
+        <div class="empty-state" th:if="${notes == null or notes.isEmpty()}">
+            <p>У вас пока нет заметок в этой категории</p>
         </div>
     </div>
 
@@ -106,9 +112,22 @@
                     
                     <!-- Список категорий -->
                     <div class="categories-list">
-                        <div th:each="cat : ${categories}" class="category-item">
+                        <!-- Все заметки -->
+                        <div class="category-item" th:classappend="${currentCategory == null} ? 'active-category'">
+                            <span class="category-color" style="background: #667eea"></span>
+                            <a th:href="@{/notes}" class="category-link">Все заметки</a>
+                        </div>
+                        
+                        <!-- Список категорий -->
+                        <div th:each="cat : ${categories}" 
+                             class="category-item"
+                             th:classappend="${currentCategory != null and currentCategory.id == cat.id} ? 'active-category'">
                             <span class="category-color" th:style="'background: ' + ${cat.color}"></span>
-                            <span th:text="${cat.name}">Работа</span>
+                            <a th:href="@{/notes(categoryId=${cat.id})}" 
+                               th:text="${cat.name}"
+                               class="category-link">
+                               Работа
+                            </a>
                             <form th:action="@{/categories/delete/{id}(id=${cat.id})}" method="post" class="delete-category-form">
                                 <button type="submit" onclick="return confirm('Удалить категорию?')">×</button>
                             </form>
