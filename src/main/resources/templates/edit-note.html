@@ -7,17 +7,16 @@
 </head>
 <body>
     <div class="container">
-        <header>
+        <div class="header-actions">
             <h1>Редактировать заметку</h1>
             <a th:href="@{/notes}" class="back-link">← Назад</a>
-        </header>
+        </div>
 
         <div class="note-form">
-            <form th:action="@{/notes/update/{id}(id=${note.id})}" method="post">
+            <form th:action="@{/notes/update/{id}(id=${note.id})}" method="post" id="editForm">
                 <input type="text" name="title" th:value="${note.title}" placeholder="Заголовок" required>
                 <textarea name="content" rows="5" placeholder="Текст заметки..." required th:text="${note.content}"></textarea>
                 
-                <!-- Выбор категории -->
                 <select name="categoryId" class="category-select">
                     <option value="">— Без категории —</option>
                     <option th:each="cat : ${categories}" 
@@ -27,9 +26,14 @@
                     </option>
                 </select>
                 
-                <button type="submit">Обновить</button>
+                <div class="form-actions">
+                    <button type="submit" class="save-btn">Сохранить</button>
+                    <button type="button" class="delete-btn" onclick="deleteNote()">Удалить</button>
+                </div>
             </form>
         </div>
     </div>
+
+    <script th:src="@{/js/edit-note.js}"></script>
 </body>
 </html>

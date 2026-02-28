@@ -6,7 +6,7 @@ function toggleSidebar() {
     overlay.classList.toggle('show');
 }
 
-// Закрытие по Esc
+// Закрытие по клавише Escape
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const sidebar = document.getElementById('sidebar');
@@ -16,7 +16,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Закрытие при клике вне сайдбара
+// Закрытие сайдбара при клике вне его
 document.addEventListener('click', function(e) {
     const sidebar = document.getElementById('sidebar');
     const profileIcon = document.querySelector('.profile-icon');
@@ -28,16 +28,5 @@ document.addEventListener('click', function(e) {
         if (!isClickInsideSidebar && !isClickOnIcon) {
             toggleSidebar();
         }
-    }
-});
-
-// Инициализация: проверка наличия элементов
-document.addEventListener('DOMContentLoaded', function() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    const profileIcon = document.querySelector('.profile-icon');
-    
-    if (!sidebar || !overlay || !profileIcon) {
-        console.log('Элементы сайдбара не найдены');
     }
 });

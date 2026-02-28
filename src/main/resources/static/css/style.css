@@ -16,6 +16,7 @@ body {
     margin: 0 auto;
 }
 
+/* ===== ШАПКА ===== */
 .header-actions {
     display: flex;
     justify-content: space-between;
@@ -35,34 +36,21 @@ body {
     gap: 10px;
 }
 
-.change-password-btn {
-    background: #4CAF50;
+.back-link {
     color: white;
     text-decoration: none;
-    padding: 10px 20px;
+    padding: 5px 10px;
+    background: rgba(255,255,255,0.2);
     border-radius: 5px;
-    font-size: 14px;
-    transition: background 0.3s;
+    display: inline-block;
+    margin-bottom: 20px;
 }
 
-.change-password-btn:hover {
-    background: #45a049;
+.back-link:hover {
+    background: rgba(255,255,255,0.3);
 }
 
-.logout-btn {
-    background: #ff4444;
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: background 0.3s;
-}
-
-.logout-btn:hover {
-    background: #cc0000;
-}
-
+/* ===== ФОРМЫ ===== */
 .note-form {
     background: rgb(89, 78, 149);
     border-radius: 10px;
@@ -77,7 +65,8 @@ body {
 }
 
 .note-form input,
-.note-form textarea {
+.note-form textarea,
+.note-form select {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -88,7 +77,8 @@ body {
 }
 
 .note-form input:focus,
-.note-form textarea:focus {
+.note-form textarea:focus,
+.note-form select:focus {
     outline: none;
     border-color: #667eea;
 }
@@ -108,13 +98,18 @@ body {
     background: #5a67d8;
 }
 
+/* ===== СЕТКА ЗАМЕТОК ===== */
 .notes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    column-count: 3;
+    column-gap: 20px;
+    column-fill: balance;
 }
 
 .note-card {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 20px;
+    break-inside: avoid;
     background: rgb(103, 90, 175);
     border-radius: 10px;
     padding: 20px;
@@ -132,8 +127,8 @@ body {
 
 .note-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 10px;
 }
 
@@ -145,50 +140,19 @@ body {
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word;
-    padding-right: 10px;
 }
 
-.note-actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.edit-btn {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 0.9em;
-    padding: 5px 10px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 3px;
-    transition: background 0.3s;
-}
-
-.edit-btn:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-.delete-form {
-    margin: 0;
-    display: inline;
-}
-
-.delete-btn {
-    background: none;
-    border: none;
-    color: #ff9999;
-    font-size: 0.9em;
-    padding: 5px 10px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 3px;
+.note-select {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    accent-color: #667eea;
     cursor: pointer;
-    transition: background 0.3s, color 0.3s;
+    display: none;
 }
 
-.delete-btn:hover {
-    background: rgba(255,0,0,0.3);
-    color: white;
+.delete-mode-active .note-select {
+    display: inline-block;
 }
 
 .note-content {
@@ -213,24 +177,30 @@ body {
     margin-bottom: 3px;
 }
 
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 3px;
+.card-footer {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
 }
 
-button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+.edit-btn-footer {
+    display: inline-block;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.9em;
+    padding: 6px 20px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    transition: all 0.3s;
 }
 
+.edit-btn-footer:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+}
+
+/* ===== СТАТУСЫ СООБЩЕНИЙ ===== */
 .error {
     color: red;
     padding: 10px;
@@ -248,22 +218,21 @@ button {
     margin-bottom: 10px;
 }
 
-.back-link {
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.empty-state p {
     color: white;
-    text-decoration: none;
-    padding: 5px 10px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 5px;
-    display: inline-block;
-    margin-bottom: 20px;
+    font-size: 1.1em;
+    opacity: 0.8;
 }
 
-.back-link:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-/* ===== СТИЛИ ДЛЯ ПРОФИЛЯ И САЙДБАРА ===== */
-
+/* ===== ПРОФИЛЬ И САЙДБАР ===== */
 .profile-icon {
     background: none;
     border: none;
@@ -428,15 +397,13 @@ button {
     backdrop-filter: blur(3px);
     display: none;
     z-index: 999;
-    transition: opacity 0.3s;
 }
 
 .overlay.show {
     display: block;
 }
 
-/* ===== СТИЛИ ДЛЯ КАТЕГОРИЙ ===== */
-
+/* ===== КАТЕГОРИИ ===== */
 .categories-section {
     margin-top: 20px;
     padding-top: 20px;
@@ -468,6 +435,13 @@ button {
     background: rgba(0,0,0,0.05);
 }
 
+.active-category {
+    background: rgba(102, 126, 234, 0.15);
+    border-radius: 8px;
+    font-weight: 600;
+    border-left: 3px solid #667eea;
+}
+
 .category-color {
     width: 12px;
     height: 12px;
@@ -475,8 +449,40 @@ button {
     margin-right: 10px;
 }
 
-.category-item span {
-    color: #333;
+.category-link {
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
+    padding: 8px 5px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.category-link:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.category-count {
+    font-size: 0.8em;
+    color: #666;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin: 0 5px;
+    min-width: 30px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.active-category .category-count {
+    background: rgba(102, 126, 234, 0.2);
+    color: #667eea;
+    font-weight: 500;
+}
+
+.category-item:hover .category-count {
+    transform: scale(1.05);
 }
 
 .delete-category-form {
@@ -553,11 +559,6 @@ button {
     cursor: pointer;
 }
 
-.category-select:focus {
-    outline: none;
-    border-color: #667eea;
-}
-
 .note-category {
     margin-bottom: 10px;
 }
@@ -573,86 +574,39 @@ button {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.category-link {
-    flex: 1;
-    text-decoration: none;
-    color: inherit;
-    padding: 8px 5px;
-    font-size: 14px;
-    transition: all 0.3s;
+.delete-form-hidden {
+    display: none;
 }
 
-.category-link:hover {
-    text-decoration: underline;
-    opacity: 0.8;
-}
-
-.active-category {
-    background: rgba(102, 126, 234, 0.15);
-    border-radius: 8px;
-    font-weight: 600;
-    border-left: 3px solid #667eea;
-}
-
-.all-notes {
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-}
-
-.all-notes .category-link {
-    font-weight: 600;
-    color: #667eea;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 50px 20px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
+.form-actions {
+    display: flex;
+    gap: 10px;
     margin-top: 20px;
 }
 
-.empty-state p {
-    color: white;
-    font-size: 1.1em;
-    opacity: 0.8;
-}
-
-.category-count {
-    font-size: 0.8em;
-    color: #666;
-    background: rgba(0, 0, 0, 0.05);
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin: 0 5px;
-    min-width: 30px;
-    text-align: center;
+.form-actions button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
     transition: all 0.3s;
 }
 
-.active-category .category-count {
-    background: rgba(102, 126, 234, 0.2);
-    color: #667eea;
-    font-weight: 500;
-}
-
-.all-notes .category-count {
+.save-btn {
     background: #667eea;
     color: white;
-    font-weight: 500;
 }
 
-.category-item:hover .category-count {
-    transform: scale(1.05);
+.save-btn:hover {
+    background: #5a67d8;
 }
 
-.dark-theme .category-count {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ddd;
+.form-actions .delete-btn {
+    background: #ff4444;
 }
 
-.dark-theme .active-category .category-count {
-    background: rgba(233, 69, 96, 0.3);
-    color: #e94560;
+.form-actions .delete-btn:hover {
+    background: #cc0000;
 }

@@ -23,10 +23,6 @@
             </div>
         </div>
 
-        <div class="error" th:if="${param.error != null}" th:switch="${param.error}">
-            <p th:case="'unauthorized'">У вас нет прав для редактирования этой заметки</p>
-        </div>
-
         <!-- Форма создания -->
         <div class="note-form">
             <h2>Новая заметка</h2>
@@ -51,12 +47,6 @@
             <div th:each="note : ${notes}" class="note-card">
                 <div class="note-header">
                     <h3 th:text="${note.title}">Заголовок</h3>
-                    <div class="note-actions">
-                        <a th:href="@{/notes/edit/{id}(id=${note.id})}" class="edit-btn">Редактировать</a>
-                        <form th:action="@{/notes/delete/{id}(id=${note.id})}" method="post" class="delete-form">
-                            <button type="submit" class="delete-btn" onclick="return confirm('Удалить заметку?')">Удалить</button>
-                        </form>
-                    </div>
                 </div>
                 
                 <!-- БЛОК С КАТЕГОРИЕЙ -->
@@ -74,6 +64,11 @@
                     <div th:if="${note.updatedAt != null}">
                         Обновлено: <span th:text="${#temporals.format(note.updatedAt, 'dd.MM.yyyy HH:mm')}">01.01.2026 12:00</span>
                     </div>
+                </div>
+
+                <!-- Полоса с кнопкой редактирования -->
+                <div class="card-footer">
+                    <a th:href="@{/notes/edit/{id}(id=${note.id})}" class="edit-btn-footer">Редактировать</a>
                 </div>
             </div>
         </div>
