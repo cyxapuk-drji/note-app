@@ -29,8 +29,8 @@ public class AuthController {
     public String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
     
         User user = userService.findByUsername(username);
-    
-        if (user != null && user.getPassword().equals(password)) {
+
+        if (user != null && userService.checkPassword(user, password)) {
             session.setAttribute("userId", user.getId());
             session.setAttribute("username", user.getUsername());
             return "redirect:/notes";
@@ -75,7 +75,7 @@ public class AuthController {
 
         User currentUser = userService.findById(userId);
         
-        if (!oldPassword.equals(currentUser.getPassword())) {
+        if (!userService.checkPassword(currentUser, oldPassword)) {
             model.addAttribute("error", "Неверный старый пароль");
             return "change-password";
         }
@@ -96,11 +96,12 @@ public class AuthController {
         }
 
         try {
-            currentUser.setPassword(newPassword);
-            userService.updateUser(currentUser);
-            session.setAttribute("userPassword", newPassword);
+            userService.changePassword(userId, newPassword);
+            session.invalidate();
+            model.addAttribute("message", "Пароль успешно изменен. Войдите с новым паролем.");
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            return "change-password";
         }
         
         return "redirect:/auth/login";
