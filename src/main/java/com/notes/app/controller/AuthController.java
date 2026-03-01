@@ -11,9 +11,14 @@ import jakarta.servlet.http.HttpSession;
 
 import org.springframework.ui.Model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     
     @Autowired
     private UserService userService;
@@ -27,15 +32,17 @@ public class AuthController {
     // Отправка запроса на вход
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
+        log.info("Попытка входа: {}", username);
     
         User user = userService.findByUsername(username);
 
         if (user != null && userService.checkPassword(user, password)) {
+            log.info("Успешный вход пользователя: {} (ID: {})", username, user.getId());
             session.setAttribute("userId", user.getId());
             session.setAttribute("username", user.getUsername());
             return "redirect:/notes";
         }
-    
+        log.warn("Неудачная попытка входа: {}", username);
         model.addAttribute("error", "Неверный логин или пароль");
         return "login";
     }
@@ -49,6 +56,7 @@ public class AuthController {
     // Отправка запроса на регистрацию
     @PostMapping("/register")
     public String register(@RequestParam String username, @RequestParam String password) {
+        log.info("Регистрация нового пользователя: {}", username);
         userService.register(username, password);
         return "redirect:/auth/login";
     }
@@ -110,6 +118,7 @@ public class AuthController {
     // Выход
     @GetMapping("/logout")
     public String logout(HttpSession session) {
+        log.info("Выход пользователя ID: {}", session.getAttribute("userId"));
         session.invalidate();
         return "redirect:/auth/login";
     }

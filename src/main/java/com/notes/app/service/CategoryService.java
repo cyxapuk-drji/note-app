@@ -9,8 +9,13 @@ import com.notes.app.repository.NoteRepository;
 import java.util.List;
 import com.notes.app.model.User;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class CategoryService {
+
+    private static final Logger log = LoggerFactory.getLogger(CategoryService.class);
     
     @Autowired
     private CategoryRepository categoryRepository;
@@ -24,6 +29,8 @@ public class CategoryService {
 
     public Category createCategory(String name, String color, User user) {
 
+        log.info("Создание категории '{}' для пользователя ID: {}", name, user.getId());
+
         Category category = new Category();
 
         category.setName(name);
@@ -34,6 +41,7 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) {
+        log.warn("Удаление категории ID: {}", id);
         categoryRepository.deleteById(id);
     }
 
