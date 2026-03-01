@@ -23,7 +23,7 @@
 
 **Бэкенд**
 - Java 21
-- Spring Boot 3.2
+- Spring Boot 4.0
 - Spring Data JPA
 - Spring MVC
 - PostgreSQL 15
