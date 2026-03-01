@@ -30,7 +30,7 @@ public class NoteController {
 
     // Главная старница со списком всех заметок
     @GetMapping
-    public String showNotes(@RequestParam(required = false) Long categoryId, HttpSession session, Model model) {
+    public String getAllNotes(@RequestParam(required = false) Long categoryId, HttpSession session, Model model) {
 
         Long userId = (Long) session.getAttribute("userId");
 
@@ -41,11 +41,11 @@ public class NoteController {
         List<Note> notes;
 
         if (categoryId != null) {
-            notes = noteService.getNotesByCategoryAndUser(categoryId, userId);
+            notes = noteService.getNotesByCategoryAndUserSorted(categoryId, userId);
             Category currentCat = categoryService.getCategory(categoryId);
             model.addAttribute("currentCategory", currentCat);
         } else {
-            notes = noteService.getNotesByUserId(userId);
+            notes = noteService.getNotesByUserIdSorted(userId);
         }
 
         List<Category> categories = categoryService.getCategoriesWithCount(userId);
@@ -94,7 +94,11 @@ public class NoteController {
         noteService.createNote(title, content, user.getId(), category);
 
         model.addAttribute("notes", noteService.getNotesByUserId(userId));
-        return "redirect:/notes";
+        if (categoryId != null) {
+            return "redirect:/notes?categoryId=" + categoryId;
+        } else {
+            return "redirect:/notes";
+        }
     }
 
     // Удаление заметки
@@ -139,6 +143,19 @@ public class NoteController {
         } catch (RuntimeException e) {
             
             return "redirect:/notes?error=not_found";
+        }
+    }
+
+    @PostMapping("/favorite/toggle/{id}")
+    public String toggleFavorite(@PathVariable Long id, @RequestParam(required = false) Long categoryId, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) return "redirect:/auth/login";
+
+        noteService.toggleFavorite(id);
+        if (categoryId != null) {
+            return "redirect:/notes?categoryId=" + categoryId;
+        } else {
+            return "redirect:/notes";
         }
     }
 }

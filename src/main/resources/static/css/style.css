@@ -610,3 +610,15 @@ body {
 .form-actions .delete-btn:hover {
     background: #cc0000;
 }
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #ccc;
+    transition: all 0.3s;
+}
+.favorite-btn.active {
+    color: gold;
+}

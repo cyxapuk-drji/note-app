@@ -47,6 +47,15 @@
             <div th:each="note : ${notes}" class="note-card">
                 <div class="note-header">
                     <h3 th:text="${note.title}">Заголовок</h3>
+                    
+                    <!-- Кнопка избранного -->
+                    <form th:action="@{/notes/favorite/toggle/{id}(id=${note.id})}" method="post">
+                        <input type="hidden" name="categoryId" th:value="${currentCategory != null ? currentCategory.id : ''}">
+                        <button class="favorite-btn" th:classappend="${note.favorite} ? 'active'">
+                            <span th:if="${note.favorite}">★</span>
+                            <span th:unless="${note.favorite}">☆</span>
+                        </button>
+                    </form>
                 </div>
                 
                 <!-- БЛОК С КАТЕГОРИЕЙ -->

@@ -30,4 +30,6 @@ public class Note {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    private boolean favorite = false;
 }

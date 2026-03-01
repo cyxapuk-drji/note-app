@@ -70,4 +70,18 @@ public class NoteService {
     public List<Note> getNotesByCategoryAndUser(Long categoryId, Long userId) {
         return noteRepository.findByCategoryIdAndUserId(categoryId, userId);
     }
+
+    public void toggleFavorite(Long id) {
+        Note note = noteRepository.findById(id).orElseThrow(() -> new RuntimeException("Заметка не найдена"));
+        note.setFavorite(!note.isFavorite());
+        noteRepository.save(note);
+    }
+
+    public List<Note> getNotesByUserIdSorted(Long userId) {
+        return noteRepository.findByUserIdOrderByFavoriteDescCreatedAtDesc(userId);
+    }
+
+    public List<Note> getNotesByCategoryAndUserSorted(Long categoryId, Long userId) {
+        return noteRepository.findByCategoryIdAndUserIdOrderByFavoriteDescCreatedAtDesc(categoryId, userId);
+    }
 }

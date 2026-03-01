@@ -7,21 +7,22 @@
 </head>
 <body>
     <div class="container">
-        <h2>Регистрация</h2>
-        
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        
-        <form th:action="@{/auth/register}" method="post">
-            <div>
+        <div class="note-form" style="max-width: 400px; margin: 50px auto;">
+            <h2>Регистрация</h2>
+            
+            <div th:if="${error}" class="error" th:text="${error}"></div>
+            
+            <form th:action="@{/auth/register}" method="post">
                 <input type="text" name="username" placeholder="Логин" required>
-            </div>
-            <div>
                 <input type="password" name="password" placeholder="Пароль" required>
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <span style="color: white;">Уже есть аккаунт? </span>
+                <a th:href="@{/auth/login}" class="back-link">Вход</a>
             </div>
-            <button type="submit">Зарегистрироваться</button>
-        </form>
-        
-        <p>Уже есть аккаунт? <a th:href="@{/auth/login}">Вход</a></p>
+        </div>
     </div>
 </body>
 </html>

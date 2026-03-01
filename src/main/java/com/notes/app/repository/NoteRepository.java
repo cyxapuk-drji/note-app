@@ -9,7 +9,15 @@ import java.util.List;
 @Repository
 public interface NoteRepository extends JpaRepository<Note, Long> {
     List<Note> findByUserId(Long userId);
+
     List<Note> findByCategoryIdAndUserId(Long categoryId, Long userId);
+
     int countByCategoryIdAndUserId(Long categoryId, Long userId);
+
+    List<Note> findByUserIdAndFavoriteTrueOrderByCreatedAtDesc(Long userId);
+
+    List<Note> findByUserIdOrderByFavoriteDescCreatedAtDesc(Long userId);
+
+    List<Note> findByCategoryIdAndUserIdOrderByFavoriteDescCreatedAtDesc(Long categoryId, Long userId);
 } 
     
