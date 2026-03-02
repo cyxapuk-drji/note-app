@@ -24,12 +24,6 @@ public class Note {
     private LocalDateTime updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    private boolean favorite = false;
+    @JoinColumn(name = "Tag_id")
+    private Tag tag;
 }

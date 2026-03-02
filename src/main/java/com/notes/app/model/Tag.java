@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "Tag")
+public class Tag {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
@@ -15,11 +15,4 @@ public class Category {
     private String name;
 
     private String color;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @Transient
-    private int noteCount;
 }

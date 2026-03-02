@@ -3,10 +3,10 @@ package com.notes.app.dto.response;
 import lombok.Data;
 
 @Data
-public class CategoryResponse {
+public class TagResponse {
     
     private Long Id;
     private String name;
     private String color;
-    private int noteCount;
+    private Long noteCount;
 }
