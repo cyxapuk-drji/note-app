@@ -3,7 +3,7 @@ package com.notes.app.dto.request;
 import lombok.Data;
 
 @Data
-public class CreateTagRequest {
+public class TagRequest {
     
     private String name;
     private String color;

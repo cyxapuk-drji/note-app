@@ -3,7 +3,7 @@ package com.notes.app.dto.request;
 import lombok.Data;
 
 @Data
-public class CreateNoteRequest {
+public class NoteRequest {
     
     private String title;
     private String content;

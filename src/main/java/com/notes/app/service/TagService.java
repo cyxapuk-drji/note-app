@@ -1,5 +1,7 @@
 package com.notes.app.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import com.notes.app.model.Tag;
 import com.notes.app.repository.TagRepository;
@@ -16,8 +18,8 @@ public class TagService {
         tagRepository.deleteById(id);
     }
 
-    public Tag getTag(Long id) {
-        return tagRepository.findById(id).orElse(null);
+    public Optional<Tag> getTagById(Long id) {
+        return tagRepository.findById(id);
     }
 
     public Tag createTag(String color, String name) {
@@ -31,11 +33,16 @@ public class TagService {
 
     public Tag updateTag(Long tagId, String color, String name) {
 
-        Tag tag = tagRepository.findById(tagId).orElseThrow(() -> new RuntimeException("Tag not found"));
+        Optional<Tag> optionalTag = tagRepository.findById(tagId);
 
-        tag.setColor(color);
-        tag.setName(name);
-
-        return tagRepository.save(tag);
+        if (optionalTag.isPresent()) {
+            Tag tag = optionalTag.get();
+            tag.setName(name);
+            if (color != null) {
+                tag.setColor(color);
+            }
+            return tagRepository.save(tag);
+        }
+        return null;
     }
 }
