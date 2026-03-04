@@ -8,5 +8,5 @@ public class TagResponse {
     private Long id;
     private String name;
     private String color;
-    private Long noteCount;
+    //private Long noteCount;
 }

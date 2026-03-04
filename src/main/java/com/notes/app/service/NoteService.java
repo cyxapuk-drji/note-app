@@ -3,6 +3,7 @@ package com.notes.app.service;
 import org.springframework.stereotype.Service;
 
 import com.notes.app.repository.NoteRepository;
+import com.notes.app.repository.TagRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +17,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class NoteService {
 
-    private  final NoteRepository noteRepository;
+    private final NoteRepository noteRepository;
+
+    private final TagRepository tagRepository;
 
     // Удаление заметки по id
     public void deleteNote(Long id) {
@@ -24,14 +27,18 @@ public class NoteService {
     }
 
     //создание заметки с id
-    public Note createNote(String title, String content) {
-    
+    public Note createNote(String title, String content, String tag) {
+
         Note note = new Note();
         note.setTitle(title);
         note.setContent(content);
-        //note.setTag(tag);
         note.setCreatedAt(LocalDateTime.now());
         note.setUpdatedAt(LocalDateTime.now());
+        
+        if (tag != null && !tag.isEmpty()) {
+            note.setTag(null);
+        }
+        note.setTag(tagRepository.findByName(tag).get());
     
         return noteRepository.save(note);
     }

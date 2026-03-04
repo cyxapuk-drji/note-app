@@ -27,7 +27,7 @@ public class NoteController {
 
     @PostMapping
     public ResponseEntity<NoteResponse> createNote(@RequestBody NoteRequest request) {
-        Note note = noteService.createNote(request.getTitle(), request.getContent());
+        Note note = noteService.createNote(request.getTitle(), request.getContent(), request.getTag());
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(note));
     }
 
@@ -39,7 +39,7 @@ public class NoteController {
            response.setContent(note.getContent());
            response.setCreatedAt(LocalDateTime.now());
            response.setUpdatedAt(LocalDateTime.now());
-           //response.setTag(note.getTag().getName());
+           response.setTag(note.getTag().getName());
 
            return response;
     }
