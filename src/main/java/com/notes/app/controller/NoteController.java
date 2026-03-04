@@ -1,7 +1,5 @@
 package com.notes.app.controller;
 
-import java.time.LocalDateTime;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,21 +25,38 @@ public class NoteController {
 
     @PostMapping
     public ResponseEntity<NoteResponse> createNote(@RequestBody NoteRequest request) {
-        Note note = noteService.createNote(request.getTitle(), request.getContent(), request.getTag());
+        Note note = noteService.createNote(request.getTitle(), request.getContent(), request.getTagName());
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(note));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<NoteResponse> updateNoteById(@PathVariable Long id, @RequestBody NoteRequest request) {
+        Note updateNote = noteService.updateNote(id, request.getTitle(), request.getContent(), request.getTagName());
+        
+        if (updateNote != null) {
+            return ResponseEntity.ok(convertToResponse(updateNote));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNoteById(@PathVariable Long id) {
+        noteService.deleteNote(id);
+        return ResponseEntity.noContent().build();
+    } 
 
     private NoteResponse convertToResponse(Note note) {
         
            NoteResponse response = new NoteResponse();
            
-           response.setTitle(note.getTitle());
-           response.setContent(note.getContent());
-           response.setCreatedAt(LocalDateTime.now());
-           response.setUpdatedAt(LocalDateTime.now());
-           response.setTag(note.getTag().getName());
+            response.setId(note.getId());
+            response.setTitle(note.getTitle());
+            response.setContent(note.getContent());
+            response.setCreatedAt(note.getCreatedAt());
+            response.setUpdatedAt(note.getUpdatedAt());
+            response.setTagName(note.getTag() != null ? note.getTag().getName() : null);
 
-           return response;
+            return response;
     }
 
 }

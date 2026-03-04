@@ -21,7 +21,7 @@ public class TagService {
         return tagRepository.findById(id);
     }
 
-    public Tag createTag(String color, String name) {
+    public Tag createTag(String name, String color) {
 
         Tag tag = new Tag();
         tag.setColor(color);
@@ -44,4 +44,10 @@ public class TagService {
         }
         return null;
     }
+
+    public Tag findOrCreateTag(String tagName) {
+        return tagRepository.findByName(tagName)
+                .orElseGet(() -> createTag(tagName, null));
+    }
+
 }

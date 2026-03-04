@@ -23,13 +23,13 @@ public class TagController {
 
     @PostMapping()
     public ResponseEntity<TagResponse> createTag(@RequestBody TagRequest request) {
-        Tag tag = tagService.createTag(request.getColor(), request.getName());
+        Tag tag = tagService.createTag(request.getColor(), request.getTagName());
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(tag));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TagResponse> updateTagByID(@PathVariable Long id, @RequestBody TagRequest request) {
-        Tag updateTag = tagService.updateTag(id, request.getColor(), request.getName());
+        Tag updateTag = tagService.updateTag(id, request.getColor(), request.getTagName());
         
         if (updateTag != null) {
             return ResponseEntity.ok(convertToResponse(updateTag));
@@ -48,7 +48,7 @@ public class TagController {
         TagResponse response = new TagResponse();
         response.setId(tag.getId());
         response.setColor(tag.getColor());
-        response.setName(tag.getName());
+        response.setTagName(tag.getName());
 
         return response;
     }

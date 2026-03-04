@@ -1,11 +1,14 @@
 package com.notes.app.dto.request;
 
 import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 
 @Data
 public class NoteRequest {
     
+    @NotBlank(message = "Поле не может быть пустым")
     private String title;
+
     private String content;
-    private String tag;
+    private String tagName;
 }
