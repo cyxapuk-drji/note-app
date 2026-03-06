@@ -47,7 +47,7 @@ public class TagService {
 
     public Tag findOrCreateTag(String tagName) {
         return tagRepository.findByName(tagName)
-                .orElseGet(() -> createTag(tagName, null));
+                .orElseGet(() -> createTag(tagName, "#3B82F6"));
     }
 
 }

@@ -13,8 +13,10 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
+    @Column(nullable = false)
     private String title;
     
+    @Column(nullable = false)
     private String content;
 
     @Column(name = "created_at")

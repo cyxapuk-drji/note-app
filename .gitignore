@@ -19,3 +19,4 @@ application.yaml
 application.properties
 *.key
 *.secret
+.env
