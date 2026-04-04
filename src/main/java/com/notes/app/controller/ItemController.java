@@ -94,6 +94,7 @@ public class ItemController {
             response.setUpdatedAt(item.getUpdatedAt());
             response.setIsFavorite(item.getIsFavorite());
             response.setTagName(item.getTagName() != null ? item.getTagName() : null);
+            response.setTagColor(item.getTagColor());
             response.setType(item.getType());
             response.setPriority(item.getPriority());
 

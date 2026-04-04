@@ -26,7 +26,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT i FROM Item i WHERE i.type = :type AND i.userId = :userId")
     List<Item> findByTypeAndUserId(@Param("type") ItemType type, @Param("userId") Long userId);
 
-    @Query("SELECT i FROM Item i WHERE i.tag.name = :tagName AND i.userId = :userId")
+    @Query("SELECT i FROM Item i WHERE i.tagName = :tagName AND i.userId = :userId")
     List<Item> findByTagNameAndUserId(@Param("tagName") String tagName, @Param("userId") Long userId);
 } 
     

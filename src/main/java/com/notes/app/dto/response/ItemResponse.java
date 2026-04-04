@@ -16,6 +16,7 @@ public class ItemResponse {
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
     private String tagName;
+    private String tagColor;
     private Boolean isFavorite;
     private ItemType type;
     private Priority priority;
