@@ -6,9 +6,9 @@
 ![Docker](https://img.shields.io/badge/Docker-blue)
 ![Maven](https://img.shields.io/badge/Maven-red)
 
-REST API на Java Spring Boot и PostgreSQL для создания и организации заметок и задач.
+## Описание
 
-**Автор:** cyxapuk
+REST API на Java Spring Boot и PostgreSQL для создания, организации заметок и задач.
 
 ---
 
@@ -27,17 +27,11 @@ REST API на Java Spring Boot и PostgreSQL для создания и орга
 - Java 21
 - Spring Boot 4.0
 - Spring Data JPA
-- Spring Validation
+- Swagger/OpenAPI
 - PostgreSQL 15
+- Docker & Docker Compose
 - Hibernate
 - Maven
-- Lombok
-
-**Инфраструктура**
-- Docker
-- Docker Compose
-- Git
-
 ---
 
 ## Установка и запуск
@@ -52,7 +46,7 @@ REST API на Java Spring Boot и PostgreSQL для создания и орга
 git clone https://github.com/drji-dev/Note-Task-Manager.git
 cd Note-Task-Manager
 ./mvnw clean package -DskipTests
-docker-compose up --build
+docker-compose up -d
 ```
 Приложение будет доступно по адресу: http://localhost:8080
 
@@ -61,16 +55,18 @@ docker-compose up --build
     Создайте базу данных PostgreSQL:
 
 ```sql
-CREATE DATABASE noteapp;
+CREATE DATABASE your_db_name;
+CREATE USER your_username WITH
+GRANT ALL PRIVILEGES ON DATABASE
 ```
     Настройте подключение в src/main/resources/application.yml:
 
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/your_DBNAME
-    username: your_username
-    password: your_password
+    url: jdbc:postgresql://localhost:5432/your_db_name
+    username: your_user_db_name
+    password: your_user_password
 ```
     Запустите приложение:
 
@@ -81,14 +77,12 @@ spring:
 
 Создайте файл .env в корне проекта:
 ```env
-DB_NAME=your_DBNAME
-DB_USERNAME=your_username
+DB_NAME=your_db_name
+DB_USERNAME=your_user_db_name
 DB_PASSWORD=your_password
 ```
 
 ### REST API эндпоинты
-
-## Все запросы требуют User-Id:
 
 ## Теги
 | Метод | URL | Описание |
@@ -109,16 +103,44 @@ DB_PASSWORD=your_password
 | PUT | `/api/items/{id}` | Обновить item |
 | DELETE | `/api/items/{id}` | Удалить item |
 
-## Примеры запросов
+## Документация API
 
-Создать тег
+После запуска приложения документация доступна по адресу:
+
+http://localhost:8080/swagger-ui/index.html
+
+## Примеры запросов через curl
+
+### Создать тег
 ```bash
-curl -X POST http://localhost:8080/api/tags -H "Content-Type: application/json" -H "User-Id: 1" -d '{"tagName":"your_tagName","color":"your_color"}' 
+curl -X POST http://localhost:8080/api/tags 
+-H "Content-Type: application/json" 
+-H "User-Id: 1" -d '
+    {
+        "tagName":"your_tagName",
+        "color":"your_color"
+    }' 
 ```
-По умолчанию FFFFFF
+Цвет по умолчанию #FFFFFF
 
-Создать item
+### Создать item
 ```bash
-curl -X POST http://localhost:8080/api/items -H "Content-Type: application/json" -H "User-Id: 1" -d '{"title":"your_title","content":"your_content","tagName":"your_tagName","type":"TASK/NOTE","priority":"LOW/MEDIUM/HIGH"}' 
+curl -X POST http://localhost:8080/api/items 
+-H "Content-Type: application/json" 
+-H "User-Id: 1" -d '
+    {
+        "title":"your_title",
+        "content":"your_content",
+        "tagName":"your_tagName",
+        "type":"TASK/NOTE",
+        "priority":"LOW/MEDIUM/HIGH"
+    }' 
 ```
 Eсли type:NOTE priority игнорируется
+
+## Автор: 
+Drji
+
+## Лицензия
+
+MIT License

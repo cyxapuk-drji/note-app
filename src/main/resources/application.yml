@@ -1,11 +1,12 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: Noteapp
   datasource:
-    url: jdbc:postgresql://localhost:5432/noteapp
-    username: admin
-    password: admin
-    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   
   jpa:
     hibernate:
@@ -21,4 +22,4 @@ spring:
     cache: false
 
 server:
-  port: 8080
+  port: 8081
