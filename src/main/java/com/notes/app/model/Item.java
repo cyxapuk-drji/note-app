@@ -4,10 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 @Data
 @Entity
-@Table(name = "notes")
-public class Note {
+@Table(name = "item")
+@DynamicUpdate
+public class Item {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +28,10 @@ public class Note {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    private ItemType type;
+
+    private Priority priority;
+
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tag;
@@ -34,4 +41,12 @@ public class Note {
 
     @Column(name = "is_favorite", nullable = false)
     private Boolean isFavorite = false;
+
+    public enum ItemType {
+        NOTE, TASK
+    }
+
+    public enum Priority {
+        LOW, MEDIUM, HIGH
+    }
 }

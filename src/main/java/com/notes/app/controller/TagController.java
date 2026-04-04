@@ -1,5 +1,7 @@
 package com.notes.app.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,23 +22,28 @@ public class TagController {
     private final TagService tagService;
     
     @GetMapping("/{id}")
-    public ResponseEntity<TagResponse> getTagById(@PathVariable Long id, @RequestHeader("User-Id") Long userId) {
-        return tagService.getTagByIdAndUserId(id, userId).map(tag -> ResponseEntity.ok(convertToResponse(tag, userId))).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<TagResponse> getTagByUserId(@PathVariable Long id, @RequestHeader("User-Id") Long userId) {
+        return tagService.getTagByIdAndUserId(id, userId).map(tag -> ResponseEntity.ok(convertToResponse(tag))).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TagResponse>> getAllTagByUserId(@RequestHeader("User-Id") Long userId) {
+        return ResponseEntity.ok(tagService.getAllTagByUserId(userId).stream().map(this::convertToResponse).toList());
     }
 
     @PostMapping()
     public ResponseEntity<TagResponse> createTag(@Valid @RequestBody TagRequest request, @RequestHeader("User-Id") Long userId) {
-        Tag tag = tagService.createTagByUserId(request.getColor(), request.getTagName(), userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(tag, userId));
+        Tag tag = tagService.createTagByUserId(request, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(tag));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TagResponse> updateTagById(@PathVariable Long id, @Valid @RequestBody TagRequest request, @RequestHeader("User-Id") Long userId) {
 
-        Tag updateTag = tagService.updateTagByUserId(id, request.getColor(), request.getTagName(), userId);
+        Tag updateTag = tagService.updateTagByIdAndUserId(id, request.getColor(), request.getTagName(), userId);
         
         if (updateTag != null) {
-            return ResponseEntity.ok(convertToResponse(updateTag, userId));
+            return ResponseEntity.ok(convertToResponse(updateTag));
         }
         return ResponseEntity.notFound().build();
     }
@@ -47,13 +54,12 @@ public class TagController {
         return ResponseEntity.noContent().build();
     }
 
-    private TagResponse convertToResponse(Tag tag, Long userId) {
+    private TagResponse convertToResponse(Tag tag) {
         
         TagResponse response = new TagResponse();
         response.setId(tag.getId());
         response.setColor(tag.getColor());
         response.setTagName(tag.getName());
-        response.setNoteCount(tagService.getNoteCountByUserId(tag.getId(), userId));
 
         return response;
     }

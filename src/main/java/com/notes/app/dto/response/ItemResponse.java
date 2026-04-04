@@ -1,10 +1,14 @@
 package com.notes.app.dto.response;
 
 import java.time.LocalDateTime;
+
+import com.notes.app.model.Item.ItemType;
+import com.notes.app.model.Item.Priority;
+
 import lombok.Data;
 
 @Data
-public class NoteResponse {
+public class ItemResponse {
 
     private Long id;
     private String title;
@@ -13,4 +17,6 @@ public class NoteResponse {
     private LocalDateTime createdAt;
     private String tagName;
     private Boolean isFavorite;
+    private ItemType type;
+    private Priority priority;
 }
