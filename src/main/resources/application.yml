@@ -4,7 +4,7 @@ spring:
   application:
     name: Noteapp
   datasource:
-    url: ${DB_URL}
+    url: ${LOCAL_DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   

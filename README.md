@@ -1,6 +1,6 @@
 # Note&TaskManager — приложение для заметок
 
-![Java](https://img.shields.io/badge/Java-21-blue)
+![Java](https://img.shields.io/badge/Java-21-red)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-brightgreen)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
 ![Docker](https://img.shields.io/badge/Docker-blue)
@@ -42,6 +42,14 @@ REST API на Java Spring Boot и PostgreSQL для создания, орган
 
 ### Быстрый старт (через Docker)
 
+    Создайте файл .env в корне проекта:
+```env
+DOCKER_DB_URL=your_DB_url
+DOCKER_DB_NAME=your_DB_name
+DOCKER_DB_USERNAME=your_DB_username
+DOCKER_DB_PASSWORD=your_DB_password
+```
+
 ```bash
 git clone https://github.com/drji-dev/Note-Task-Manager.git
 cd Note-Task-Manager
@@ -52,6 +60,13 @@ docker-compose up -d
 
 ## Запуск без Docker
 
+        Создайте файл .env в корне проекта или добавте к существующему:
+```env
+LOCAL_DB_URL=your_DB_url
+DB_USERNAME=your_DB_username
+DB_PASSWORD=your_DB_password
+```
+
     Создайте базу данных PostgreSQL:
 
 ```sql
@@ -59,27 +74,10 @@ CREATE DATABASE your_db_name;
 CREATE USER your_username WITH
 GRANT ALL PRIVILEGES ON DATABASE
 ```
-    Настройте подключение в src/main/resources/application.yml:
-
-```yaml
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/your_db_name
-    username: your_user_db_name
-    password: your_user_password
-```
     Запустите приложение:
 
 ```bash
 ./mvnw spring-boot:run
-```
-## Переменные окружения (для Docker)
-
-Создайте файл .env в корне проекта:
-```env
-DB_NAME=your_db_name
-DB_USERNAME=your_user_db_name
-DB_PASSWORD=your_password
 ```
 
 ### REST API эндпоинты
