@@ -17,54 +17,60 @@ import lombok.RequiredArgsConstructor;
 public class TagService {
     
     private final TagRepository tagRepository;
+
+    private static final String DEFAULT_COLOR = "#FFFFFF";
     
-    public Optional<Tag> getTagByIdAndUserId(Long id, Long userId) {
-        return tagRepository.findByIdAndUserId(id, userId);
+    public Optional<Tag> getTagById(Long id) {
+        return tagRepository.findById(id);
     }
 
-    public List<Tag> getAllTagByUserId(Long userId) {
-        return tagRepository.findByUserId(userId);
+    public List<Tag> getAllTags() {
+        return tagRepository.findAll();
     }
     
-    public Tag createTagByUserId(TagRequest request, Long userId) {
+    public Tag createTag(TagRequest request) {
 
-        if (tagRepository.findByNameAndUserId(request.getTagName(), userId).isPresent()) {
+        if (tagRepository.findByName(request.getTagName()).isPresent()) {
             throw new RuntimeException("Тег с таким именем уже существует");
         }
         
         Tag tag = new Tag();
         tag.setName(request.getTagName());
-        tag.setUserId(userId);
 
         if (request.getColor() != null){   
             tag.setColor(request.getColor());
         }else{
-            tag.setColor("#FFFFFF");
+            tag.setColor(DEFAULT_COLOR);
         }
         
         return tagRepository.save(tag);
     }
     
-    public Tag updateTagByIdAndUserId(Long tagId, String color, String name, Long userId) {
+    public Tag updateTagById(Long tagId, String color, String name) {
         
-        Optional<Tag> optionalTag = tagRepository.findByIdAndUserId(tagId, userId);
+        Optional<Tag> optionalTag = tagRepository.findById(tagId);
         
         if (optionalTag.isPresent()) {
             Tag tag = optionalTag.get();
-            tag.setName(name);
-            if (color != null) {
-                tag.setColor(color);
-            }
+            if (name != null && !name.equals(tag.getName())) {
+                if (tagRepository.findByName(name).isPresent()) {
+                    throw new RuntimeException("Tag with name '" + name + "' already exists");
+                }
+                tag.setName(name);
+            } 
+        if (color != null) {
+            tag.setColor(color);
+        }
             return tagRepository.save(tag);
         }
         return null;
     }
     
-    public void deleteTagByIdAndUserId(Long id, Long userId) {
-        tagRepository.deleteByIdAndUserId(id, userId);
+    public void deleteTagById(Long id) {
+        tagRepository.deleteById(id);
     }
 
-    public Tag findTagByNameAndUserId(String tagName, Long userId) {
-        return tagRepository.findByNameAndUserId(tagName, userId).orElseThrow(() -> new RuntimeException("Tag not found"));
+    public Tag findTagByTagName(String tagName) {
+        return tagRepository.findByName(tagName).orElseThrow(() -> new RuntimeException("Tag not found"));
     }
 }

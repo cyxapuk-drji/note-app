@@ -1,16 +1,14 @@
 package com.notes.app.service;
 
 import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.notes.app.dto.request.ItemRequest;
 import com.notes.app.model.Item;
 import com.notes.app.model.Tag;
 import com.notes.app.model.Item.ItemType;
 import com.notes.app.repository.ItemRepository;
-
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,80 +23,98 @@ public class ItemService {
     
     private final TagService tagService;
 
-    public Optional<Item> getItemByIdAndUserId(Long id, Long userId) {
-        return itemRepository.findByIdAndUserId(id, userId);
+    public Optional<Item> getItemById(Long id) {
+        return itemRepository.findById(id);
     }
 
-    public List<Item> getAllItemsByUserId(Long userId) {
-        return itemRepository.findByUserId(userId);
+    public List<Item> getAllItems() {
+        return itemRepository.findAll();
     }
 
-    public Item createItemByUserId(ItemRequest request, Long userId) {
+    public Item createItem(ItemRequest request) {
         
         Item item = new Item();
-        Tag tag = tagService.findTagByNameAndUserId(request.getTagName(), userId);
+
+        if (request.getTagName() != null && !request.getTagName().isBlank()) {
+            Tag tag = tagService.findTagByTagName(request.getTagName());
+            item.setTagName(tag.getName());
+            item.setTagColor(tag.getColor());
+        }
 
         item.setTitle(request.getTitle());
         item.setContent(request.getContent());
         item.setCreatedAt(LocalDateTime.now());
         item.setUpdatedAt(LocalDateTime.now());
-        item.setTagName(tag.getName());
-        item.setTagColor(tag.getColor());
-        item.setUserId(userId);
 
-        if (request.getType() != null && request.getType() == ItemType.TASK) {
-            item.setType(ItemType.TASK);
-            item.setPriority(request.getPriority());
-        }else {
-            item.setType(ItemType.NOTE);
+        if (request.getType() != null) {
+            item.setType(request.getType());
+            if (request.getType() == ItemType.TASK) {
+                item.setPriority(request.getPriority());
+            }
         }
         
         return itemRepository.save(item);
     }
 
-    public Item updateItemByUserId(Long itemId, ItemRequest request, Long userId) {
-        Item item = itemRepository.findByIdAndUserId(itemId, userId).orElseThrow(() -> new RuntimeException("Item not found"));
-        Tag tag = tagService.findTagByNameAndUserId(request.getTagName(), userId);
+    public Item updateItem(Long itemId, ItemRequest request) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
+        
+        if (request.getTagName() != null && !request.getTagName().isBlank()) {
+            try {
+                Tag tag = tagService.findTagByTagName(request.getTagName());
+                item.setTagName(tag.getName());
+                item.setTagColor(tag.getColor());
+            } catch (RuntimeException e) {
+                item.setTagName(null);
+                item.setTagColor(null);
+            }
+        } else {
+            item.setTagName(null);
+            item.setTagColor(null);
+        }
         
         item.setTitle(request.getTitle());
         item.setContent(request.getContent());
         item.setUpdatedAt(LocalDateTime.now());
-        item.setTagName(tag.getName());
-        item.setTagColor(tag.getColor());
 
-        if (request.getType() != null && request.getType() == ItemType.TASK) {
-            item.setType(ItemType.TASK);
-            item.setPriority(request.getPriority());
-        }else {
-            item.setType(ItemType.NOTE);
+        if (request.getType() != null) {
+            item.setType(request.getType());
+            if (request.getType() == ItemType.TASK) {
+                item.setPriority(request.getPriority());
+            }
         }
         
         return itemRepository.save(item);
     }
 
-    public List<Item> getAllItemByTagNameAndUserId(String tagName, Long userId) {
-        return itemRepository.findByTagNameAndUserId(tagName, userId);
+    public void deleteItem(Long id) {
+        itemRepository.deleteById(id);
     }
 
-    public List<Item> getAllItemByTypeAndUserId(ItemType type, Long userId) {
-        return itemRepository.findByTypeAndUserId(type, userId);
+    public List<Item> getFavoriteItems() {
+        return itemRepository.findFavoriteItems();
     }
 
-    public void deleteItemByUserId(Long id, Long userId) {
-        itemRepository.deleteByIdAndUserId(id, userId);
-    }
-
-    public List<Item> getFavoriteItems(Long userId) {
-        return itemRepository.findFavoriteNotesByUser(userId);
-    }
-
-    public Item toggleFavorite(Long id, Long userId) {
-        Optional<Item> optionalNote = itemRepository.findByIdAndUserId(id, userId);
+    public Item toggleFavorite(Long id) {
+        Optional<Item> optionalNote = itemRepository.findById(id);
         if(optionalNote.isPresent()) {
             Item item = optionalNote.get();
             item.setIsFavorite(!item.getIsFavorite());
             return itemRepository.save(item);
         }
         return null;
+    }
+
+    public List<Item> search(String query, String tagName, ItemType type) {
+        if (query != null && !query.isBlank()) {
+            return itemRepository.findByQuery(query);
+        }
+        if (tagName != null && !tagName.isBlank()) {
+        return itemRepository.findByTagName(tagName);
+        }
+        if (type != null) {
+            return itemRepository.findByType(type);
+        }
+        return itemRepository.findAll();
     }
 }

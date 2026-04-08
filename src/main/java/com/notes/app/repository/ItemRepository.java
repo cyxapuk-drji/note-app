@@ -1,7 +1,6 @@
 package com.notes.app.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,19 +13,17 @@ import com.notes.app.model.Item.ItemType;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Optional<Item> findByIdAndUserId(Long id, Long userId);
-
-    @Query("SELECT i FROM Item i WHERE i.isFavorite = true AND i.userId = :userId")
-    List<Item> findFavoriteNotesByUser(Long userId);
+    @Query("SELECT i FROM Item i WHERE i.type = :type ORDER BY i.updatedAt DESC")
+    List<Item> findByType(@Param("type") ItemType type);
     
-    List<Item> findByUserId(Long userId);
+    @Query("SELECT i FROM Item i WHERE i.tagName = :tagName ORDER BY i.updatedAt DESC")
+    List<Item> findByTagName(@Param("tagName") String tagName);
     
-    void deleteByIdAndUserId(Long id, Long userId);
+    @Query("SELECT i FROM Item i WHERE i.isFavorite = true ORDER BY i.updatedAt DESC")
+    List<Item> findFavoriteItems();
 
-    @Query("SELECT i FROM Item i WHERE i.type = :type AND i.userId = :userId")
-    List<Item> findByTypeAndUserId(@Param("type") ItemType type, @Param("userId") Long userId);
-
-    @Query("SELECT i FROM Item i WHERE i.tagName = :tagName AND i.userId = :userId")
-    List<Item> findByTagNameAndUserId(@Param("tagName") String tagName, @Param("userId") Long userId);
+    @Query("SELECT i FROM Item i WHERE LOWER(i.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " + 
+           "LOWER(i.content) LIKE LOWER(CONCAT('%', :query, '%'))")
+    List<Item> findByQuery(@Param("query") String query);
 } 
     

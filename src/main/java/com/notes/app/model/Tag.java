@@ -16,7 +16,4 @@ public class Tag {
     private String name;
 
     private String color;
-
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
 }

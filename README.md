@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/Java-21-red)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-brightgreen)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-blue)
 ![Docker](https://img.shields.io/badge/Docker-blue)
 ![Maven](https://img.shields.io/badge/Maven-red)
 
@@ -28,7 +28,7 @@ REST API на Java Spring Boot и PostgreSQL для создания, орган
 - Spring Boot 4.0
 - Spring Data JPA
 - Swagger/OpenAPI
-- PostgreSQL 15
+- PostgreSQL 18
 - Docker & Docker Compose
 - Hibernate
 - Maven
@@ -42,6 +42,13 @@ REST API на Java Spring Boot и PostgreSQL для создания, орган
 
 ### Быстрый старт (через Docker)
 
+```bash
+git clone https://github.com/drji-dev/Note-Task-Manager.git
+cd Note-Task-Manager
+./mvnw clean package -DskipTests
+docker-compose up -d
+```
+
     Создайте файл .env в корне проекта:
 ```env
 DOCKER_DB_URL=your_DB_url
@@ -50,12 +57,6 @@ DOCKER_DB_USERNAME=your_DB_username
 DOCKER_DB_PASSWORD=your_DB_password
 ```
 
-```bash
-git clone https://github.com/drji-dev/Note-Task-Manager.git
-cd Note-Task-Manager
-./mvnw clean package -DskipTests
-docker-compose up -d
-```
 Приложение будет доступно по адресу: http://localhost:8080
 
 ## Запуск без Docker
@@ -112,8 +113,7 @@ http://localhost:8080/swagger-ui/index.html
 ### Создать тег
 ```bash
 curl -X POST http://localhost:8080/api/tags 
--H "Content-Type: application/json" 
--H "User-Id: 1" -d '
+-H "Content-Type: application/json" '
     {
         "tagName":"your_tagName",
         "color":"your_color"
@@ -124,8 +124,7 @@ curl -X POST http://localhost:8080/api/tags
 ### Создать item
 ```bash
 curl -X POST http://localhost:8080/api/items 
--H "Content-Type: application/json" 
--H "User-Id: 1" -d '
+-H "Content-Type: application/json" '
     {
         "title":"your_title",
         "content":"your_content",
@@ -134,7 +133,7 @@ curl -X POST http://localhost:8080/api/items
         "priority":"LOW/MEDIUM/HIGH"
     }' 
 ```
-Eсли type:NOTE priority игнорируется
+Eсли type = NOTE: priority игнорируется
 
 ## Автор: 
 Drji

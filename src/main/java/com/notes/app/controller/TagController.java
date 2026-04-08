@@ -22,25 +22,25 @@ public class TagController {
     private final TagService tagService;
     
     @GetMapping("/{id}")
-    public ResponseEntity<TagResponse> getTagByUserId(@PathVariable Long id, @RequestHeader("User-Id") Long userId) {
-        return tagService.getTagByIdAndUserId(id, userId).map(tag -> ResponseEntity.ok(convertToResponse(tag))).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<TagResponse> getTagById(@PathVariable Long id) {
+        return tagService.getTagById(id).map(tag -> ResponseEntity.ok(convertToResponse(tag))).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<TagResponse>> getAllTagByUserId(@RequestHeader("User-Id") Long userId) {
-        return ResponseEntity.ok(tagService.getAllTagByUserId(userId).stream().map(this::convertToResponse).toList());
+    public ResponseEntity<List<TagResponse>> getAllTag() {
+        return ResponseEntity.ok(tagService.getAllTags().stream().map(this::convertToResponse).toList());
     }
 
     @PostMapping()
-    public ResponseEntity<TagResponse> createTag(@Valid @RequestBody TagRequest request, @RequestHeader("User-Id") Long userId) {
-        Tag tag = tagService.createTagByUserId(request, userId);
+    public ResponseEntity<TagResponse> createTag(@Valid @RequestBody TagRequest request) {
+        Tag tag = tagService.createTag(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(tag));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TagResponse> updateTagById(@PathVariable Long id, @Valid @RequestBody TagRequest request, @RequestHeader("User-Id") Long userId) {
+    public ResponseEntity<TagResponse> updateTagById(@PathVariable Long id, @Valid @RequestBody TagRequest request) {
 
-        Tag updateTag = tagService.updateTagByIdAndUserId(id, request.getColor(), request.getTagName(), userId);
+        Tag updateTag = tagService.updateTagById(id, request.getColor(), request.getTagName());
         
         if (updateTag != null) {
             return ResponseEntity.ok(convertToResponse(updateTag));
@@ -49,8 +49,8 @@ public class TagController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTagById(@PathVariable Long id, @RequestHeader("User-Id") Long userId) {
-        tagService.deleteTagByIdAndUserId(id, userId);
+    public ResponseEntity<Void> deleteTagById(@PathVariable Long id) {
+        tagService.deleteTagById(id);
         return ResponseEntity.noContent().build();
     }
 

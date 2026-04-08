@@ -24,34 +24,24 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemResponse> getItemById(@PathVariable Long id, @RequestHeader("User-Id") Long userId) {
-        return itemService.getItemByIdAndUserId(id, userId).map(item -> ResponseEntity.ok(convertToResponse(item))).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ItemResponse> getItemById(@PathVariable Long id) {
+        return itemService.getItemById(id).map(item -> ResponseEntity.ok(convertToResponse(item))).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemResponse>> getAllItemByTagOrType(@RequestParam(required = false) String tag, @RequestParam(required = false) ItemType type, @RequestHeader("User-Id") Long userId) {
-        List<ItemResponse> responses;
-
-        if (tag != null) {
-            responses = itemService.getAllItemByTagNameAndUserId(tag, userId).stream().map(this::convertToResponse).toList();
-        }else if (type != null) {
-            responses = itemService.getAllItemByTypeAndUserId(type, userId).stream().map(this::convertToResponse).toList();
-        }else {
-            responses = itemService.getAllItemsByUserId(userId).stream().map(this::convertToResponse).toList();
-        }
-    
-        return ResponseEntity.ok(responses);
+    public ResponseEntity<List<ItemResponse>> getAllItems(@RequestParam(required = false) String tag, @RequestParam(required = false) ItemType type, @RequestParam(required = false) String q) {    
+        return ResponseEntity.ok(itemService.search(q, tag, type).stream().map(this::convertToResponse).toList());
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponse> createNote(@Valid @RequestBody ItemRequest request, @RequestHeader("User-Id") Long userId) {
-        Item item = itemService.createItemByUserId(request, userId);
+    public ResponseEntity<ItemResponse> createNote(@Valid @RequestBody ItemRequest request) {
+        Item item = itemService.createItem(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(item));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ItemResponse> updateNoteById(@PathVariable Long id, @Valid @RequestBody ItemRequest request, @RequestHeader("User-Id") Long userId) {
-        Item updateNote = itemService.updateItemByUserId(id, request, userId);
+    public ResponseEntity<ItemResponse> updateNoteById(@PathVariable Long id, @Valid @RequestBody ItemRequest request) {
+        Item updateNote = itemService.updateItem(id, request);
         
         if (updateNote != null) {
             return ResponseEntity.ok(convertToResponse(updateNote));
@@ -60,14 +50,14 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNoteById(@PathVariable Long id, @RequestHeader("User-Id") Long userId) {
-        itemService.deleteItemByUserId(id, userId);
+    public ResponseEntity<Void> deleteNoteById(@PathVariable Long id) {
+        itemService.deleteItem(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/favorite")
-    public ResponseEntity<ItemResponse> toogleFavorite(@PathVariable Long id, @RequestHeader("User-Id") Long userId) {
-        Item item = itemService.toggleFavorite(id, userId);
+    public ResponseEntity<ItemResponse> toogleFavorite(@PathVariable Long id) {
+        Item item = itemService.toggleFavorite(id);
         if(item != null) {
             return ResponseEntity.ok(convertToResponse(item));
         }
@@ -75,8 +65,8 @@ public class ItemController {
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<ItemResponse>> getFavoriteNotes(@RequestHeader("User-Id") Long userId) {
-        List<Item> notes = itemService.getFavoriteItems(userId);
+    public ResponseEntity<List<ItemResponse>> getFavoriteNotes() {
+        List<Item> notes = itemService.getFavoriteItems();
         List<ItemResponse> response = notes.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());

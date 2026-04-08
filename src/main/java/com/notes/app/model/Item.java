@@ -1,6 +1,7 @@
 package com.notes.app.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -16,6 +17,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotBlank
     @Column(nullable = false)
     private String title;
     
@@ -35,9 +37,6 @@ public class Item {
     private String tagName;
 
     private String tagColor;
-
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
 
     @Column(name = "is_favorite", nullable = false)
     private Boolean isFavorite = false;
