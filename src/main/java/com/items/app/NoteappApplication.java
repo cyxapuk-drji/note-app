@@ -1,4 +1,4 @@
-package com.notes.app;
+package com.items.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

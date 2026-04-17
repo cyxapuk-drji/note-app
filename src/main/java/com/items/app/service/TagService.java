@@ -1,14 +1,14 @@
-package com.notes.app.service;
+package com.items.app.service;
 
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
-
-import com.notes.app.dto.request.TagRequest;
-import com.notes.app.model.Tag;
-import com.notes.app.repository.TagRepository;
-
 import org.springframework.transaction.annotation.Transactional;
+
+import com.items.app.dto.request.TagRequest;
+import com.items.app.model.Tag;
+import com.items.app.repository.TagRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service

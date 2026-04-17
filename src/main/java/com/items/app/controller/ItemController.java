@@ -1,4 +1,4 @@
-package com.notes.app.controller;
+package com.items.app.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,11 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.notes.app.dto.request.ItemRequest;
-import com.notes.app.dto.response.ItemResponse;
-import com.notes.app.model.Item;
-import com.notes.app.model.Item.ItemType;
-import com.notes.app.service.ItemService;
+import com.items.app.dto.request.ItemRequest;
+import com.items.app.dto.response.ItemResponse;
+import com.items.app.model.Item;
+import com.items.app.model.Item.ItemType;
+import com.items.app.service.ItemService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Noteapp
+    name: Itemapp
   datasource:
     url: ${DOCKER_DB_URL}
     username: ${DB_USERNAME}

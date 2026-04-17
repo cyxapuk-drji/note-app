@@ -1,17 +1,17 @@
-package com.notes.app.controller;
+package com.items.app.controller;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.notes.app.dto.response.TagResponse;
-import com.notes.app.model.Tag;
-import com.notes.app.service.TagService;
+
+import com.items.app.dto.request.TagRequest;
+import com.items.app.dto.response.TagResponse;
+import com.items.app.model.Tag;
+import com.items.app.service.TagService;
 
 import jakarta.validation.Valid;
-
-import com.notes.app.dto.request.TagRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController

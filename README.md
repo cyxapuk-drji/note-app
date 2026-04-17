@@ -30,7 +30,6 @@ REST API на Java Spring Boot и PostgreSQL для создания, орган
 - Swagger/OpenAPI
 - PostgreSQL 18
 - Docker & Docker Compose
-- Hibernate
 - Maven
 ---
 

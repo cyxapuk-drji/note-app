@@ -2,11 +2,14 @@ spring:
   config:
     import: optional:file:.env[.properties]
   application:
-    name: Noteapp
+    name: Itemapp
   datasource:
     url: ${LOCAL_DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  jwt:
+    secret: ${JWT_SECRET}
+    life_time: ${JWT_LIFE_TIME}
   
   jpa:
     hibernate:

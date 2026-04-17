@@ -1,4 +1,4 @@
-package com.notes.app.dto.response;
+package com.items.app.dto.response;
 
 import lombok.Data;
 

@@ -1,11 +1,12 @@
-package com.notes.app.dto.request;
+package com.items.app.dto.request;
 
 import lombok.Data;
+
+import com.items.app.model.Item.ItemType;
+import com.items.app.model.Item.Priority;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import com.notes.app.model.Item.ItemType;
-import com.notes.app.model.Item.Priority;
 
 @Data
 public class ItemRequest {

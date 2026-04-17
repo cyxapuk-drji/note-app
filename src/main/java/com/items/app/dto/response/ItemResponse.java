@@ -1,9 +1,9 @@
-package com.notes.app.dto.response;
+package com.items.app.dto.response;
 
 import java.time.LocalDateTime;
 
-import com.notes.app.model.Item.ItemType;
-import com.notes.app.model.Item.Priority;
+import com.items.app.model.Item.ItemType;
+import com.items.app.model.Item.Priority;
 
 import lombok.Data;
 

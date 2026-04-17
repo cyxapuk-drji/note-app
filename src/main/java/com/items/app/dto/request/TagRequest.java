@@ -1,4 +1,4 @@
-package com.notes.app.dto.request;
+package com.items.app.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

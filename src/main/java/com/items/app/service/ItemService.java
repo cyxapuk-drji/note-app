@@ -1,14 +1,14 @@
-package com.notes.app.service;
+package com.items.app.service;
 
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.notes.app.dto.request.ItemRequest;
-import com.notes.app.model.Item;
-import com.notes.app.model.Tag;
-import com.notes.app.model.Item.ItemType;
-import com.notes.app.repository.ItemRepository;
+import com.items.app.dto.request.ItemRequest;
+import com.items.app.model.Item;
+import com.items.app.model.Tag;
+import com.items.app.model.Item.ItemType;
+import com.items.app.repository.ItemRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
