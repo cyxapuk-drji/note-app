@@ -12,15 +12,15 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "item")
 @DynamicUpdate
 public class Item {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @NotBlank
     @Column(nullable = false)
     private String title;
-    
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
@@ -33,6 +33,10 @@ public class Item {
     private ItemType type;
 
     private Priority priority;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     private String tagName;
 

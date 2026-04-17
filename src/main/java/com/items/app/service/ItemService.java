@@ -1,5 +1,7 @@
 package com.items.app.service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,8 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.items.app.dto.request.ItemRequest;
 import com.items.app.model.Item;
 import com.items.app.model.Tag;
+import com.items.app.model.User;
 import com.items.app.model.Item.ItemType;
 import com.items.app.repository.ItemRepository;
+import com.items.app.repository.UserRepository;
+import com.items.app.security.services.UserDetailsImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,22 +23,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class ItemService {
-    
+
     private final ItemRepository itemRepository;
-    
+
+    private final UserRepository userRepository;
+
     private final TagService tagService;
 
     public Optional<Item> getItemById(Long id) {
-        return itemRepository.findById(id);
-    }
-
-    public List<Item> getAllItems() {
-        return itemRepository.findAll();
+        return itemRepository.findByIdAndUserId(id, getUserId());
     }
 
     public Item createItem(ItemRequest request) {
-        
+
         Item item = new Item();
+        User user = userRepository.findById(getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (request.getTagName() != null && !request.getTagName().isBlank()) {
             Tag tag = tagService.findTagByTagName(request.getTagName());
@@ -41,6 +46,7 @@ public class ItemService {
             item.setTagColor(tag.getColor());
         }
 
+        item.setUser(user);
         item.setTitle(request.getTitle());
         item.setContent(request.getContent());
         item.setCreatedAt(LocalDateTime.now());
@@ -52,13 +58,14 @@ public class ItemService {
                 item.setPriority(request.getPriority());
             }
         }
-        
+
         return itemRepository.save(item);
     }
 
     public Item updateItem(Long itemId, ItemRequest request) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
-        
+        Item item = itemRepository.findByIdAndUserId(itemId, getUserId())
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
         if (request.getTagName() != null && !request.getTagName().isBlank()) {
             try {
                 Tag tag = tagService.findTagByTagName(request.getTagName());
@@ -72,7 +79,7 @@ public class ItemService {
             item.setTagName(null);
             item.setTagColor(null);
         }
-        
+
         item.setTitle(request.getTitle());
         item.setContent(request.getContent());
         item.setUpdatedAt(LocalDateTime.now());
@@ -83,21 +90,21 @@ public class ItemService {
                 item.setPriority(request.getPriority());
             }
         }
-        
+
         return itemRepository.save(item);
     }
 
     public void deleteItem(Long id) {
-        itemRepository.deleteById(id);
+        itemRepository.deleteByIdAndUserId(id, getUserId());
     }
 
     public List<Item> getFavoriteItems() {
-        return itemRepository.findFavoriteItems();
+        return itemRepository.findFavoriteItemsAndUserId(getUserId());
     }
 
     public Item toggleFavorite(Long id) {
-        Optional<Item> optionalNote = itemRepository.findById(id);
-        if(optionalNote.isPresent()) {
+        Optional<Item> optionalNote = itemRepository.findByIdAndUserId(id, getUserId());
+        if (optionalNote.isPresent()) {
             Item item = optionalNote.get();
             item.setIsFavorite(!item.getIsFavorite());
             return itemRepository.save(item);
@@ -107,14 +114,20 @@ public class ItemService {
 
     public List<Item> search(String query, String tagName, ItemType type) {
         if (query != null && !query.isBlank()) {
-            return itemRepository.findByQuery(query);
+            return itemRepository.findByQueryAndUserId(query, getUserId());
         }
         if (tagName != null && !tagName.isBlank()) {
-        return itemRepository.findByTagName(tagName);
+            return itemRepository.findByTagNameAndUserId(tagName, getUserId());
         }
         if (type != null) {
-            return itemRepository.findByType(type);
+            return itemRepository.findByTypeAndUserId(type, getUserId());
         }
-        return itemRepository.findAll();
+        return itemRepository.findByUserIdOrderByUpdatedAtDesc(getUserId());
+    }
+
+    private Long getUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        return userDetails.getId();
     }
 }
