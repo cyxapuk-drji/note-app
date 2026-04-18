@@ -35,17 +35,17 @@ REST API на Java Spring Boot и PostgreSQL для создания, орган
 
 ## Установка и запуск
 
+### Быстрый старт (Docker-Compose)
+
 ### Требования
 - Java 21
-- Docker и Docker Compose (опционально)
-
-### Быстрый старт (через Docker)
+- Docker и Docker Compose
 
 ```bash
 git clone https://github.com/drji-dev/Note-Task-Manager.git
 cd Note-Task-Manager
 ./mvnw clean package -DskipTests
-docker-compose up -d
+docker-compose up --build
 ```
 
     Создайте файл .env в корне проекта:
@@ -54,17 +54,26 @@ DOCKER_DB_URL=your_DB_url
 DOCKER_DB_NAME=your_DB_name
 DOCKER_DB_USERNAME=your_DB_username
 DOCKER_DB_PASSWORD=your_DB_password
+JWT_SECRET=your_secret_key
+JWT_LIFE_TIME=86400000 # 1 day
 ```
 
 Приложение будет доступно по адресу: http://localhost:8080
 
 ## Запуск без Docker
 
+### Требования
+- Java 21
+- PostgreSQL 18
+
+
         Создайте файл .env в корне проекта или добавте к существующему:
 ```env
 LOCAL_DB_URL=your_DB_url
 DB_USERNAME=your_DB_username
 DB_PASSWORD=your_DB_password
+JWT_SECRET=your_secret_key
+JWT_LIFE_TIME=86400000 #1 day
 ```
 
     Создайте базу данных PostgreSQL:
@@ -82,6 +91,14 @@ GRANT ALL PRIVILEGES ON DATABASE
 
 ### REST API эндпоинты
 
+## Авторизация
+| Метод | URL | Описание |
+|-------|-----|----------|
+| POST | `/api/auth/signup` | Создать пользователя |
+| POST | `/api/auth/signin` | Авторизация/получение jwt токена |
+
+### Для доступа к остальным REST API эндпоинтам нужен jwt токен полученый после авторизации
+
 ## Теги
 | Метод | URL | Описание |
 |-------|-----|----------|
@@ -90,7 +107,7 @@ GRANT ALL PRIVILEGES ON DATABASE
 | PUT | `/api/tags/{id}` | Обновить тег |
 | DELETE | `/api/tags/{id}` | Удалить тег |
 
-## Заметки
+## Заметки/Задачи
 | Метод | URL | Описание |
 |-------|-----|----------|
 | GET | `/api/items?tag=your_tagName` | Получить все заметки по TagName
@@ -106,33 +123,6 @@ GRANT ALL PRIVILEGES ON DATABASE
 После запуска приложения документация доступна по адресу:
 
 http://localhost:8080/swagger-ui/index.html
-
-## Примеры запросов через curl
-
-### Создать тег
-```bash
-curl -X POST http://localhost:8080/api/tags 
--H "Content-Type: application/json" '
-    {
-        "tagName":"your_tagName",
-        "color":"your_color"
-    }' 
-```
-Цвет по умолчанию #FFFFFF
-
-### Создать item
-```bash
-curl -X POST http://localhost:8080/api/items 
--H "Content-Type: application/json" '
-    {
-        "title":"your_title",
-        "content":"your_content",
-        "tagName":"your_tagName",
-        "type":"TASK/NOTE",
-        "priority":"LOW/MEDIUM/HIGH"
-    }' 
-```
-Eсли type = NOTE: priority игнорируется
 
 ## Автор: 
 Drji

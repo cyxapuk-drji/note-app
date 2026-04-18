@@ -4,7 +4,7 @@ services:
     container_name: noteapp-postgres
     environment:
       POSTGRES_DB: ${DOCKER_DB_NAME}
-      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_USER: ${DOCKER_DB_USERNAME}
       POSTGRES_PASSWORD: ${DOCKER_DB_PASSWORD}
     ports:
       - "5433:5432"
@@ -27,6 +27,8 @@ services:
       SPRING_DATASOURCE_URL: ${DOCKER_DB_URL}
       SPRING_DATASOURCE_USERNAME: ${DOCKER_DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DOCKER_DB_PASSWORD}
+      JWT_SECRET_COMPOSE: ${JWT_SECRET}
+      JWT_LIFE_TIME_COMPOSE: ${JWT_LIFE_TIME}
     depends_on:
       postgres:
         condition: service_healthy
